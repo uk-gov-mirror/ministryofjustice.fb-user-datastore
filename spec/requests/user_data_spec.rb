@@ -50,9 +50,7 @@ describe 'UserData API', type: :request do
               end
 
               it 'is formatted as ISO-8601' do
-                expect(json['timestamp']).to eq(
-                  DateTime.parse(json['timestamp']).to_s(:iso_8601)
-                )
+                expect{ Time.iso8601(json['timestamp']) }.to_not raise_error
               end
             end
 

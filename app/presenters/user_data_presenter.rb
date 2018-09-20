@@ -4,7 +4,7 @@ class UserDataPresenter
   def initialize(user_data)
     self.timestamp = [
       user_data.created_at, user_data.updated_at
-    ].max.to_s(:iso_8601)
+    ].max.try(:iso8601)
     self.user_id = user_data.user_identifier
     self.service_slug = user_data.service_slug
     self.payload = user_data.payload
