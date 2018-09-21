@@ -14,26 +14,26 @@
       <img src="./assets/0.10.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2018-09-20T12:20:56+01:00">2018-09-20T12:20:56+01:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2018-09-21T10:51:43+01:00">2018-09-21T10:51:43+01:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
         <div class="file_list_container" id="AllFiles">
   <h2>
     <span class="group_name">All Files</span>
-    (<span class="covered_percent"><span class="green">96.49%</span></span>
+    (<span class="covered_percent"><span class="green">97.18%</span></span>
      covered at
      <span class="covered_strength">
        <span class="green">
-         2.98
+         3.58
        </span>
     </span> hits/line)
   </h2>
   <a name="AllFiles"></a>
   <div>
     <b>7</b> files in total.
-    <b>57</b> relevant lines. 
-    <span class="green"><b>55</b> lines covered</span> and
+    <b>71</b> relevant lines. 
+    <span class="green"><b>69</b> lines covered</span> and
     <span class="red"><b>2</b> lines missed </span>
   </div>
   <table class="file_list">
@@ -57,17 +57,17 @@
         <td>15</td>
         <td>14</td>
         <td>1</td>
-        <td>1.8</td>
+        <td>2.2</td>
       </tr>
       
       <tr>
         <td class="strong"><a href="#b969daf61f0af0f092b167687dd9f88a7ddf7ce3" class="src_link" title="app/controllers/user_data_controller.rb">app/controllers/user_data_controller.rb</a></td>
         <td class="green strong">100.0 %</td>
-        <td>8</td>
-        <td>4</td>
-        <td>4</td>
+        <td>38</td>
+        <td>18</td>
+        <td>18</td>
         <td>0</td>
-        <td>4.0</td>
+        <td>4.6</td>
       </tr>
       
       <tr>
@@ -107,7 +107,7 @@
         <td>7</td>
         <td>6</td>
         <td>1</td>
-        <td>2.9</td>
+        <td>4.6</td>
       </tr>
       
       <tr>
@@ -252,8 +252,8 @@
           <code class="ruby">  def enforce_json_only</code>
         </li>
       
-        <li class="covered" data-hits="8" data-linenumber="18">
-          <span class="hits">8</span>
+        <li class="covered" data-hits="14" data-linenumber="18">
+          <span class="hits">14</span>
           
           <code class="ruby">    response.status = :unacceptable unless request.format.json?</code>
         </li>
@@ -364,8 +364,8 @@
     <h3>app/controllers/user_data_controller.rb</h3>
     <h4><span class="green">100.0 %</span> covered</h4>
     <div>
-      <b>4</b> relevant lines. 
-      <span class="green"><b>4</b> lines covered</span> and
+      <b>18</b> relevant lines. 
+      <span class="green"><b>18</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
   </div>
@@ -388,34 +388,214 @@
         <li class="covered" data-hits="8" data-linenumber="3">
           <span class="hits">8</span>
           
-          <code class="ruby">    @user_data = UserData.find_by!(user_identifier: params[:user_id],</code>
+          <code class="ruby">    @user_data = UserData.find_by!(record_retrieval_params)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="4">
           
           
-          <code class="ruby">                                   service_slug: params[:service_slug])</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="5">
-          
-          
           <code class="ruby"></code>
         </li>
       
-        <li class="covered" data-hits="6" data-linenumber="6">
+        <li class="covered" data-hits="6" data-linenumber="5">
           <span class="hits">6</span>
           
           <code class="ruby">    render json: ::UserDataPresenter.new(@user_data), status: :ok</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="7">
+        <li class="never" data-hits="" data-linenumber="6">
           
           
           <code class="ruby">  end</code>
         </li>
       
+        <li class="never" data-hits="" data-linenumber="7">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
         <li class="never" data-hits="" data-linenumber="8">
+          
+          
+          <code class="ruby">  # To keep things simple and fast on the client, we&#39;ll transparently</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="9">
+          
+          
+          <code class="ruby">  # handle create or update in one method, called via POST</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="10">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def create_or_update</code>
+        </li>
+      
+        <li class="covered" data-hits="6" data-linenumber="11">
+          <span class="hits">6</span>
+          
+          <code class="ruby">    @user_data = UserData.where(record_retrieval_params).first</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="12">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="6" data-linenumber="13">
+          <span class="hits">6</span>
+          
+          <code class="ruby">    if @user_data</code>
+        </li>
+      
+        <li class="covered" data-hits="3" data-linenumber="14">
+          <span class="hits">3</span>
+          
+          <code class="ruby">      success_status = :no_content</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="15">
+          
+          
+          <code class="ruby">    else</code>
+        </li>
+      
+        <li class="covered" data-hits="3" data-linenumber="16">
+          <span class="hits">3</span>
+          
+          <code class="ruby">      success_status = :created</code>
+        </li>
+      
+        <li class="covered" data-hits="3" data-linenumber="17">
+          <span class="hits">3</span>
+          
+          <code class="ruby">      @user_data = UserData.new(record_retrieval_params)</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="18">
+          
+          
+          <code class="ruby">    end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="19">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="6" data-linenumber="20">
+          <span class="hits">6</span>
+          
+          <code class="ruby">    @user_data.payload = user_data_params[:payload]</code>
+        </li>
+      
+        <li class="covered" data-hits="6" data-linenumber="21">
+          <span class="hits">6</span>
+          
+          <code class="ruby">    @user_data.save!</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="22">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="6" data-linenumber="23">
+          <span class="hits">6</span>
+          
+          <code class="ruby">    render status: success_status, format: :json</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="24">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="25">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="26">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  private</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="27">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="28">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def record_retrieval_params(opts = params)</code>
+        </li>
+      
+        <li class="covered" data-hits="17" data-linenumber="29">
+          <span class="hits">17</span>
+          
+          <code class="ruby">    {</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="30">
+          
+          
+          <code class="ruby">      user_identifier: params[:user_id],</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="31">
+          
+          
+          <code class="ruby">      service_slug: params[:service_slug]</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="32">
+          
+          
+          <code class="ruby">    }</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="33">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="34">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="35">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def user_data_params(opts = params)</code>
+        </li>
+      
+        <li class="covered" data-hits="6" data-linenumber="36">
+          <span class="hits">6</span>
+          
+          <code class="ruby">    opts.permit(:payload)</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="37">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="38">
           
           
           <code class="ruby">end</code>
@@ -647,8 +827,8 @@
           <code class="ruby">  def call(env)</code>
         </li>
       
-        <li class="covered" data-hits="8" data-linenumber="7">
-          <span class="hits">8</span>
+        <li class="covered" data-hits="14" data-linenumber="7">
+          <span class="hits">14</span>
           
           <code class="ruby">    if env[&quot;CONTENT_TYPE&quot;] == &#39;application/x-www-form-urlencoded&#39;</code>
         </li>
@@ -665,8 +845,8 @@
           <code class="ruby">    end</code>
         </li>
       
-        <li class="covered" data-hits="8" data-linenumber="10">
-          <span class="hits">8</span>
+        <li class="covered" data-hits="14" data-linenumber="10">
+          <span class="hits">14</span>
           
           <code class="ruby">    @app.call(env)</code>
         </li>
@@ -753,7 +933,7 @@
         <li class="covered" data-hits="9" data-linenumber="9">
           <span class="hits">9</span>
           
-          <code class="ruby">      cipher = OpenSSL::Cipher::Cipher.new(&quot;aes-256-cbc&quot;)</code>
+          <code class="ruby">      cipher = OpenSSL::Cipher.new(&quot;aes-256-cbc&quot;)</code>
         </li>
       
         <li class="covered" data-hits="9" data-linenumber="10">
@@ -813,7 +993,7 @@
         <li class="covered" data-hits="1" data-linenumber="19">
           <span class="hits">1</span>
           
-          <code class="ruby">      cipher = OpenSSL::Cipher::Cipher.new(&quot;aes-256-cbc&quot;)</code>
+          <code class="ruby">      cipher = OpenSSL::Cipher.new(&quot;aes-256-cbc&quot;)</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="20">
