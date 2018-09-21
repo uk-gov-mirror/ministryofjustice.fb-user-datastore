@@ -8,14 +8,8 @@ class UserDataController < ApplicationController
   # To keep things simple and fast on the client, we'll transparently
   # handle create or update in one method, called via POST
   def create_or_update
-    @user_data = UserData.where(record_retrieval_params).first
-
-    if @user_data
-      success_status = :no_content
-    else
-      success_status = :created
-      @user_data = UserData.new(record_retrieval_params)
-    end
+    @user_data = find_or_build(record_retrieval_params)
+    success_status = @user_data.persisted? ? :no_content : :created
 
     @user_data.payload = user_data_params[:payload]
     @user_data.save!
@@ -24,6 +18,10 @@ class UserDataController < ApplicationController
   end
 
   private
+
+  def find_or_build(attributes)
+    UserData.where(attributes).first || UserData.new(attributes)
+  end
 
   def record_retrieval_params(opts = params)
     {
