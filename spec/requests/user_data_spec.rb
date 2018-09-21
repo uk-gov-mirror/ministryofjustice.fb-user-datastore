@@ -7,6 +7,11 @@ describe 'UserData API', type: :request do
       'content-type' => 'application/json'
     }
   }
+  let(:service_slug) { 'my-service' }
+  # NOTE: this must be a valid UUID, otherwise ActiveRecord silently
+  # ignores it in an initializer
+  let(:user_identifier) { SecureRandom::uuid }
+
 
   describe 'a GET request' do
     before do
@@ -14,9 +19,7 @@ describe 'UserData API', type: :request do
     end
 
     context 'to /service/:service_slug/user/:user_identifier' do
-      let(:slug) { 'my-service' }
-      let(:user_identifier) { '12345678' }
-      let(:url) { "/service/#{slug}/user/#{user_identifier}" }
+      let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
 
       # it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
 
@@ -80,7 +83,79 @@ describe 'UserData API', type: :request do
   end
 
   describe 'POST /service/:service_slug/:user/:user_identifier' do
+    let(:post_request) do
+      post url, params: params.to_json, headers: headers
+    end
 
+    context 'to /service/:service_slug/user/:user_identifier' do
+      let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
+
+      # it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
+
+      context 'with a valid token' do
+        let(:token) { valid_token }
+
+        # it_behaves_like 'a JSON-only API', :get, '/service/:service_slug/:user/:user_identifier'
+
+        context 'and a valid JSON body' do
+          let(:encrypted_payload) { 'kdjh9s8db9s87dbosd7b0sd8b70s9d8bs98d7b9s8db' }
+          let(:params) {{
+            payload: encrypted_payload
+          }}
+
+          let(:matching_user_data) {
+            UserData.where(
+              service_slug: service_slug,
+              user_identifier: user_identifier
+            )
+          }
+
+          context 'when the user data does not exist' do
+            it 'creates the user data' do
+              expect{ post_request }.to change{ matching_user_data.count }.from(0).to(1)
+            end
+
+            it 'responds with :created status' do
+              post_request
+              expect(response).to have_http_status(:created)
+            end
+
+            describe 'the created_user_data' do
+              let(:created_user_data) { matching_user_data.last }
+
+              it 'has the given payload' do
+                post_request
+                expect(created_user_data.payload).to eq(encrypted_payload)
+              end
+            end
+          end
+          context 'when the user data exists' do
+            let!(:existing_user_data) {
+              UserData.create!(
+                service_slug: service_slug,
+                user_identifier: user_identifier,
+                payload: 'existingpayload'
+              )
+            }
+
+            it 'does not create new user data' do
+              expect{ post_request }.to_not change{ UserData.count }
+            end
+
+            it 'updates the existing_user_data' do
+              expect{ post_request }.to change{ existing_user_data.reload.payload }
+              .from('existingpayload')
+              .to(encrypted_payload)
+            end
+
+            it 'responds with :no_content status' do
+              post_request
+              expect(response).to have_http_status(:no_content)
+            end
+          end
+        end
+      end
+    end
   end
 
 end

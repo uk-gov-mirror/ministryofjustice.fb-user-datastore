@@ -6,7 +6,7 @@ module Crypto
     # PLEASE NOTE: encrypted text must have the initialization_vector
     # as the first 16 characters
     def self.encrypt(key:, data:)
-      cipher = OpenSSL::Cipher::Cipher.new("aes-256-cbc")
+      cipher = OpenSSL::Cipher.new("aes-256-cbc")
       cipher.encrypt
       cipher.key = Digest::SHA256.digest(key)
       cipher.iv = initialization_vector = cipher.random_iv
@@ -16,7 +16,7 @@ module Crypto
     end
 
     def self.decrypt(key:, data:)
-      cipher = OpenSSL::Cipher::Cipher.new("aes-256-cbc")
+      cipher = OpenSSL::Cipher.new("aes-256-cbc")
       cipher.decrypt
       cipher.key = Digest::SHA256.digest(key)
       cipher.iv = data.slice!(0,16)
