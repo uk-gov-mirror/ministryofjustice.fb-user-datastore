@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FileCacheAdapter do
+describe Adapters::FileCacheAdapter do
   let(:cache_dir) { 'example cache dir' }
 
   describe '.get' do

@@ -1,4 +1,4 @@
-class RedisCacheAdapter
+class Adapters::RedisCacheAdapter
   def self.get(key)
     connection.get(key)
   end

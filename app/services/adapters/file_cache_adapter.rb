@@ -1,4 +1,4 @@
-class FileCacheAdapter
+class Adapters::FileCacheAdapter
   def self.get(key)
     create_cache_dir_if_needed!
     File.read(file_path(key)) rescue nil

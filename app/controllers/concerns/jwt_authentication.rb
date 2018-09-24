@@ -50,7 +50,6 @@ module Concerns
     end
 
     def get_service_token(service_slug)
-      byebug
       ServiceTokenService.get(service_slug)
     end
   end
