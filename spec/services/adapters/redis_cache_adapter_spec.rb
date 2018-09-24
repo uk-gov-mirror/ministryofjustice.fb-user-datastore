@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RedisCacheAdapter do
+describe Adapters::RedisCacheAdapter do
   let(:given_key) { 'key' }
   let(:mock_connection) { double('mock connection', get: 'get result', append: 'append result') }
 

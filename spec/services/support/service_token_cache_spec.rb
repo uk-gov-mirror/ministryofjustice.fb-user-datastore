@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceTokenCache do
+describe Support::ServiceTokenCache do
   let(:service_slug) { 'my-service' }
   let(:generated_key_name) { 'key name' }
   let(:mock_adapter) { double('cache adapter', get: 'get result', put: 'put result')}

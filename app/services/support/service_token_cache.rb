@@ -1,4 +1,4 @@
-class ServiceTokenCache
+class Support::ServiceTokenCache
   def self.get(service_slug)
     adapter.get(key_name(service_slug))
   end

@@ -1,6 +1,6 @@
-class KubectlAdapter
+class Adapters::KubectlAdapter
   def self.get_secret(name)
-    json = ShellAdapter.output_of(
+    json = Adapters::ShellAdapter.output_of(
       kubectl_cmd(name)
     )
     Base64.decode64(
@@ -32,7 +32,7 @@ class KubectlAdapter
   end
 
   def self.kubectl_binary
-    ShellAdapter.output_of('which kubectl')
+    Adapters::ShellAdapter.output_of('which kubectl')
   end
 
 end

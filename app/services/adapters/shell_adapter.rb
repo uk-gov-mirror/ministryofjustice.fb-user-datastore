@@ -1,6 +1,6 @@
 require 'open3'
 
-class ShellAdapter
+class Adapters::ShellAdapter
   # run the given array of cmds & args
   # discarding the output
   def self.exec(*args)

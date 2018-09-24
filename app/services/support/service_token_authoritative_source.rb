@@ -1,6 +1,6 @@
-class ServiceTokenAuthoritativeSource
+class Support::ServiceTokenAuthoritativeSource
   def self.get(service_slug)
-    KubectlAdapter.get_secret(
+    Adapters::KubectlAdapter.get_secret(
       secret_name(service_slug)
     )
   end

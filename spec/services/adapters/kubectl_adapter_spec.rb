@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe KubectlAdapter do
+describe Adapters::KubectlAdapter do
   let(:secret_name) { 'my-secret' }
   before do
-    allow(ShellAdapter).to receive(:output_of).and_return('some output')
+    allow(Adapters::ShellAdapter).to receive(:output_of).and_return('some output')
   end
 
   describe '.get_secret' do
@@ -21,7 +21,7 @@ describe KubectlAdapter do
       allow(JSON).to receive(:parse).with(kubectl_output).and_return(parsed_json)
       allow(Base64).to receive(:decode64).with('token value').and_return('decoded token')
       allow(described_class).to receive(:kubectl_cmd).and_return('kubectl cmd')
-      allow(ShellAdapter).to receive(:output_of).with('kubectl cmd').and_return(kubectl_output)
+      allow(Adapters::ShellAdapter).to receive(:output_of).with('kubectl cmd').and_return(kubectl_output)
     end
 
     it 'calls kubectl_cmd passing the given secret name' do
@@ -30,7 +30,7 @@ describe KubectlAdapter do
     end
 
     it 'gets the output of the kubectl_cmd' do
-      expect(ShellAdapter).to receive(:output_of).with('kubectl cmd').and_return(kubectl_output)
+      expect(Adapters::ShellAdapter).to receive(:output_of).with('kubectl cmd').and_return(kubectl_output)
       described_class.get_secret(secret_name)
     end
 
