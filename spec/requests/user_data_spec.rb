@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'UserData API', type: :request do
-  let(:parsed_body) { JSON.parse(response.body) }
   let(:headers) {
     {
       'content-type' => 'application/json'
@@ -14,18 +13,18 @@ describe 'UserData API', type: :request do
 
 
   describe 'a GET request' do
-    before do
-      get url, headers: headers
-    end
-
     context 'to /service/:service_slug/user/:user_identifier' do
       let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
 
       it_behaves_like 'a JSON-only API', :get, '/service/:service_slug/user/:user_identifier'
-      # it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
+      it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
 
       context 'with a valid token' do
-        let(:token) { valid_token }
+        before do
+          allow_any_instance_of(ApplicationController).to receive(:verify_token!)
+          get url, headers: headers
+        end
+
 
         context 'when the user data exists' do
           let(:user_data) { create(:user_data) }
@@ -90,10 +89,12 @@ describe 'UserData API', type: :request do
       let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
 
       it_behaves_like 'a JSON-only API', :get, '/service/:service_slug/user/:user_identifier'
-      # it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
+      it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
 
       context 'with a valid token' do
-        let(:token) { valid_token }
+        before do
+          allow_any_instance_of(ApplicationController).to receive(:verify_token!)
+        end
 
         context 'and a valid JSON body' do
           let(:encrypted_payload) { 'kdjh9s8db9s87dbosd7b0sd8b70s9d8bs98d7b9s8db' }

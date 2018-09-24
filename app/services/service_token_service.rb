@@ -1,5 +1,6 @@
 class ServiceTokenService
   def self.get(service_slug)
+    byebug
     if token = cache.get(service_slug)
       token
     else

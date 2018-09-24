@@ -4,10 +4,14 @@ module Concerns
 
     included do
       rescue_from StandardError do |e|
-        render_json_error :server_error,
-                          e.class.name.underscore.to_sym,
-                          message: e.message,
-                          location: e.backtrace[0] unless Rails.env.production?
+        args = { message: e.message }
+        unless Rails.env.production?
+          args.merge!(
+            detail: e.class.name.underscore.to_sym,
+            location: e.backtrace[0]
+          )
+        end
+        render_json_error :internal_server_error, :internal_server_error, args
       end
 
       rescue_from ActiveRecord::RecordNotFound do |e|
@@ -18,14 +22,16 @@ module Concerns
     private
 
     def render_json_error(status, error_code, extra = {})
-      status = Rack::Utils::SYMBOL_TO_STATUS_CODE[status] if status.is_a? Symbol
+      if status.is_a? Symbol
+        status = (Rack::Utils::SYMBOL_TO_STATUS_CODE[status] || 500)
+      end
 
       error = {
-        title: I18n.t("error_messages.#{error_code}.title"),
+        title: I18n.t(:title, scope: [:error_messages, error_code]),
         status: status
       }.merge(extra)
 
-      detail = I18n.t("error_messages.#{error_code}.detail", default: '')
+      detail = I18n.t(:detail, scope: [:error_messages, error_code], default: '')
       error[:detail] = detail unless detail.empty?
 
       render json: { errors: [error] }, status: status

@@ -23,7 +23,7 @@ class KubectlAdapter
 
   def self.kubectl_args(  context: ENV['KUBECTL_CONTEXT'],
                           bearer_token: ENV['KUBECTL_BEARER_TOKEN'],
-                          namespace: )
+                          namespace: ENV['KUBECTL_NAMESPACE'])
     [
         '--context=' + context,
         '--namespace=' + namespace,

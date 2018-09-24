@@ -1,3 +1,5 @@
+require 'open3'
+
 class ShellAdapter
   # run the given array of cmds & args
   # discarding the output
@@ -15,7 +17,7 @@ class ShellAdapter
   end
 
   def self.capture_with_stdin(cmd: [], stdin: nil)
-    cmd_line = build_cmd( args )
+    cmd_line = build_cmd( cmd )
 
     stdout_str, status = Open3.capture2(cmd_line, stdin_data: stdin)
     unless status.success?

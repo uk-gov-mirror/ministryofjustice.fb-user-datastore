@@ -1,7 +1,7 @@
 class FileCacheAdapter
   def self.get(key)
     create_cache_dir_if_needed!
-    File.read(file_path(key))
+    File.read(file_path(key)) rescue nil
   end
 
   def self.put(key, value)
