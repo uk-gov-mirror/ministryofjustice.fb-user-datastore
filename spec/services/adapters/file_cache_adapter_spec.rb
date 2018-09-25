@@ -47,8 +47,8 @@ describe Adapters::FileCacheAdapter do
       described_class.put('key', value)
     end
 
-    it 'overwrites the file_path with the given value plus a terminating new line' do
-      expect(mock_file).to receive(:<<).with(value + "\n")
+    it 'overwrites the file_path with the given value' do
+      expect(mock_file).to receive(:<<).with(value)
       described_class.put('key', value)
     end
   end

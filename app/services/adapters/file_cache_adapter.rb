@@ -7,7 +7,7 @@ class Adapters::FileCacheAdapter
   def self.put(key, value)
     create_cache_dir_if_needed!
     File.open(file_path(key), 'w') do |f|
-      f << value + "\n"
+      f << value
     end
   end
 
