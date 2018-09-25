@@ -49,4 +49,65 @@ describe Adapters::KubectlAdapter do
       described_class.get_secret(secret_name)
     end
   end
+
+  describe '.kubectl_args' do
+    let(:context) {}
+    let(:namespace) {}
+    let(:bearer_token) {}
+    let(:args) {
+      {
+        context: context,
+        namespace: namespace,
+        bearer_token: bearer_token
+      }
+    }
+    let(:return_value) { described_class.kubectl_args(args) }
+
+    it 'returns a string' do
+      expect(return_value).to be_a(String)
+    end
+
+    context 'given no values' do
+      it 'returns an empty string' do
+        expect(return_value).to be_empty
+      end
+    end
+
+    context 'given a context' do
+      let(:context) { 'my-context' }
+
+      it 'includes --context=(context)' do
+        expect(return_value).to include('--context=my-context')
+      end
+
+      context 'and a namespace' do
+        let(:namespace) { 'my-namespace' }
+
+        it 'includes --namespace=(namespace)' do
+          expect(return_value).to include('--namespace=my-namespace')
+        end
+        it 'includes --context=(context)' do
+          expect(return_value).to include('--context=my-context')
+        end
+      end
+    end
+
+    context 'given a namespace' do
+      let(:namespace) { 'my-namespace' }
+
+      it 'includes --namespace=(namespace)' do
+        expect(return_value).to include('--namespace=my-namespace')
+      end
+    end
+
+    context 'given a bearer_token' do
+      let(:bearer_token) { 'my-bearer_token' }
+
+      it 'includes --token=(bearer_token)' do
+        expect(return_value).to include('--token=my-bearer_token')
+      end
+    end
+
+
+  end
 end

@@ -16,7 +16,7 @@ class Adapters::KubectlAdapter
       secret_name,
       '-o',
       'json'
-    ] + kubectl_args
+    ] + [kubectl_args]
   end
 
   private
@@ -24,11 +24,12 @@ class Adapters::KubectlAdapter
   def self.kubectl_args(  context: ENV['KUBECTL_CONTEXT'],
                           bearer_token: ENV['KUBECTL_BEARER_TOKEN'],
                           namespace: ENV['KUBECTL_NAMESPACE'])
-    [
-        '--context=' + context,
-        '--namespace=' + namespace,
-        '--token=' + bearer_token
-    ]
+    args = []
+    args << '--context=' + context unless context.blank?
+    args << '--namespace=' + namespace unless namespace.blank?
+    args << '--token=' + bearer_token  unless bearer_token.blank?
+
+    args.compact.join(' ')
   end
 
   def self.kubectl_binary
