@@ -16,3 +16,5 @@ The following environment variables are either needed, or read if present:
 * KUBECTL_BEARER_TOKEN: identifies the ServiceAccount the app will authenticate
   against in kubernetes for kubectl calls
 * KUBECTL_CONTEXT: which kubectl context it will look for secrets in
+* SERVICE_TOKEN_CACHE_TTL: expire service token cache entries after this many
+  seconds

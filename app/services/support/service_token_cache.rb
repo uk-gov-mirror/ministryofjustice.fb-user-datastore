@@ -1,10 +1,21 @@
 class Support::ServiceTokenCache
   def self.get(service_slug)
-    adapter.get(key_name(service_slug))
+    begin
+      cache_key = key_name(service_slug)
+      cached_value = adapter.get(cache_key)
+      cache_entry = CacheEntry.deserialize(cached_value)
+      cache_entry.expired? ? nil : cache_entry.data
+    rescue StandardError => e
+      Rails.logger.warn(
+        message: "exception getting cache key #{cache_key}",
+        detail: [e.message, e.backtrace.join("\n")].join("\n")
+      )
+      nil
+    end
   end
 
   def self.put(service_slug, token)
-    adapter.put(key_name(service_slug), token)
+    adapter.put(key_name(service_slug), CacheEntry.serialize(token))
   end
 
   private
