@@ -2,8 +2,14 @@ url = ENV["REDISCLOUD_URL"] || ENV['REDIS_URL']
 service_token_cache_class = Adapters::FileCacheAdapter
 if url.present?
   begin
-    uri = URI.parse(url)
-    Rails.configuration.x.service_token_cache_redis = Redis.new(host:uri.host, port:uri.port, password:uri.password)
+    uri_with_protocol = (ENV['REDIS_PROTOCOL'] || 'redis://') + url
+    puts "uri_with_protocol = #{uri_with_protocol}"
+    uri = URI.parse(uri_with_protocol)
+    puts uri.inspect
+    Rails.configuration.x.service_token_cache_redis = Redis.new(
+      url: uri_with_protocol,
+      password: ENV['REDIS_AUTH_TOKEN']
+    )
     service_token_cache_class = Adapters::RedisCacheAdapter
   rescue URI::InvalidURIError
     puts "could not parse a valid Redis URI from #{url} - falling back to file log"
