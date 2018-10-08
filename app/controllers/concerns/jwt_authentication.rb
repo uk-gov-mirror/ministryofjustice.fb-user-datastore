@@ -25,11 +25,15 @@ module Concerns
                       args: params,
                       leeway: ENV['MAX_IAT_SKEW_SECONDS'])
 
+      Rails.logger.debug("token.present? = #{token.present?}")
       raise Exceptions::TokenNotPresentError.new unless token.present?
 
       begin
+        Rails.logger.debug("getting service token for #{params[:service_slug]}")
         hmac_secret = get_service_token(params[:service_slug])
-        payload, header = decoded_token = JWT.decode(
+        Rails.logger.debug('got service token')
+        Rails.logger.debug('decoding JWT')
+        payload, header = JWT.decode(
           token,
           hmac_secret,
           true,
@@ -41,10 +45,15 @@ module Concerns
 
         # NOTE: verify_iat used to be in the JWT gem, but was removed in v2.2
         # so we have to do it manually
-        if (payload['iat'] - Time.current.to_i).abs > leeway
+        iat_skew = payload['iat'] - Time.current.to_i
+        if iat_skew.abs > leeway
+          Rails.logger.debug("iat skew is #{iat_skew}, max is #{leeway} - INVALID")
           raise Exceptions::TokenNotValidError.new
         end
+
+        Rails.logger.debug "token is valid"
       rescue StandardError => e
+        Rails.logger.debug("Couldn't parse that token - error #{e}")
         raise Exceptions::TokenNotValidError.new
       end
     end
