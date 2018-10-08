@@ -3,9 +3,7 @@ service_token_cache_class = Adapters::FileCacheAdapter
 if url.present?
   begin
     uri_with_protocol = (ENV['REDIS_PROTOCOL'] || 'redis://') + url
-    puts "uri_with_protocol = #{uri_with_protocol}"
     uri = URI.parse(uri_with_protocol)
-    puts uri.inspect
     Rails.configuration.x.service_token_cache_redis = Redis.new(
       url: uri_with_protocol,
       password: ENV['REDIS_AUTH_TOKEN']
