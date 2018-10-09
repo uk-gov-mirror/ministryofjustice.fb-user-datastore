@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Adapters::RedisCacheAdapter do
   let(:given_key) { 'key' }
-  let(:mock_connection) { double('mock connection', get: 'get result', append: 'append result') }
+  let(:mock_connection) { double('mock connection', get: 'get result', set: 'set result') }
 
   describe '.connection' do
     it 'returns the x.service_token_cache_redis value from Rails config' do
@@ -31,13 +31,13 @@ describe Adapters::RedisCacheAdapter do
       allow(described_class).to receive(:connection).and_return(mock_connection)
     end
 
-    it 'calls append on the connection with the given key and value' do
-      expect(mock_connection).to receive(:append).with(given_key, given_value)
+    it 'calls set on the connection with the given key and value' do
+      expect(mock_connection).to receive(:set).with(given_key, given_value)
       described_class.put(given_key, given_value)
     end
 
-    it 'returns the result of calling connection.append' do
-      expect(described_class.put(given_key, given_value)).to eq('append result')
+    it 'returns the result of calling connection.set' do
+      expect(described_class.put(given_key, given_value)).to eq('set result')
     end
   end
 end
