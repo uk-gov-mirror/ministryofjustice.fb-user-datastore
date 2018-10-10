@@ -25,15 +25,10 @@ module Concerns
                       args: params,
                       leeway: ENV['MAX_IAT_SKEW_SECONDS'])
 
-      Rails.logger.debug("token.present? = #{token.present?}")
       raise Exceptions::TokenNotPresentError.new unless token.present?
 
       begin
-        Rails.logger.debug("getting service token for #{params[:service_slug]}")
         hmac_secret = get_service_token(params[:service_slug])
-        Rails.logger.debug("got service token #{hmac_secret}")
-        Rails.logger.debug("given JWT:\n#{token}")
-        Rails.logger.debug('decoding JWT')
         payload, header = JWT.decode(
           token,
           hmac_secret,
