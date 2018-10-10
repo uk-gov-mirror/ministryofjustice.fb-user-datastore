@@ -1,5 +1,7 @@
 class UserDataController < ApplicationController
   def show
+    Rails.logger.debug "in show, params = #{params}"
+    Rails.logger.debug "record_retrieval_params = #{record_retrieval_params}"
     @user_data = UserData.find_by!(record_retrieval_params)
 
     render json: ::UserDataPresenter.new(@user_data), status: :ok
