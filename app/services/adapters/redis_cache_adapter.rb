@@ -4,7 +4,7 @@ class Adapters::RedisCacheAdapter
   end
 
   def self.put(key, value)
-    connection.append(key, value)
+    connection.set(key, value)
   end
 
   private
