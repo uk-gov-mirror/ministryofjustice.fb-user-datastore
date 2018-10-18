@@ -33,6 +33,7 @@ en:
   error_messages:
     record_not_found:
       title: "I couldn't find the requested user_data in that service"
-
+    cache_exception: exception getting cache key %{name}
+    cmd_failed: 'failing cmd: %{name}'
 
   hello: "Hello world"

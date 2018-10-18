@@ -7,7 +7,7 @@ class Support::ServiceTokenCache
       cache_entry.expired? ? nil : cache_entry.data
     rescue StandardError => e
       Rails.logger.warn(
-        message: "exception getting cache key #{cache_key}",
+        message: I18n.t('error_messages.cache_exception', name: cache_key),
         detail: [e.message, e.backtrace.join("\n")].join("\n")
       )
       nil
