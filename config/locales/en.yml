@@ -33,6 +33,11 @@ en:
   error_messages:
     record_not_found:
       title: "I couldn't find the requested user_data in that service"
-
+    token_not_present:
+      title: Token not present
+    token_not_valid:
+      title: Token not valid
+    internal_server_error:
+      title: Internal Server Error
 
   hello: "Hello world"
