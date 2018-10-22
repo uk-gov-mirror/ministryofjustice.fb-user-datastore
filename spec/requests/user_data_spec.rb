@@ -157,7 +157,7 @@ describe 'UserData API', type: :request do
   end
 
   describe 'request error messages' do
-    describe 'exception TokenNotValidError raised' do
+    context 'exception TokenNotValidError raised' do
       before do
         allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(Exceptions::TokenNotValidError)
         post "/service/#{service_slug}/user/#{user_identifier}"
@@ -171,7 +171,7 @@ describe 'UserData API', type: :request do
       end
     end
 
-    describe 'exception TokenNotPresentError raised' do
+    context 'exception TokenNotPresentError raised' do
       before do
         allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(Exceptions::TokenNotPresentError)
         post "/service/#{service_slug}/user/#{user_identifier}"
@@ -186,7 +186,7 @@ describe 'UserData API', type: :request do
       end
     end
 
-    describe 'exception InternalServerError raised' do
+    context 'exception InternalServerError raised' do
       before do
         allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(StandardError)
         post "/service/#{service_slug}/user/#{user_identifier}"
