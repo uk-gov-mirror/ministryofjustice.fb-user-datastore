@@ -25,7 +25,6 @@ describe 'UserData API', type: :request do
           get url, headers: headers
         end
 
-
         context 'when the user data exists' do
           let(:user_data) { create(:user_data) }
           let(:user_identifier) { user_data.user_identifier }
@@ -157,4 +156,48 @@ describe 'UserData API', type: :request do
     end
   end
 
+  describe 'request error messages' do
+    context 'exception TokenNotValidError raised' do
+      before do
+        allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(Exceptions::TokenNotValidError)
+        post "/service/#{service_slug}/user/#{user_identifier}"
+      end
+      it 'returns a 403 status' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns json error message' do
+        expect(json['errors'].first['title']).to eq(I18n.t('error_messages.token_not_valid.title'))
+      end
+    end
+
+    context 'exception TokenNotPresentError raised' do
+      before do
+        allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(Exceptions::TokenNotPresentError)
+        post "/service/#{service_slug}/user/#{user_identifier}"
+      end
+
+      it 'returns a 401 status' do
+        expect(response).to have_http_status(401)
+      end
+
+      it 'returns json error message' do
+        expect(json['errors'].first['title']).to eq(I18n.t('error_messages.token_not_present.title'))
+      end
+    end
+
+    context 'exception InternalServerError raised' do
+      before do
+        allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(StandardError)
+        post "/service/#{service_slug}/user/#{user_identifier}"
+      end
+      it 'returns a 500 status' do
+        expect(response).to have_http_status(500)
+      end
+
+      it 'returns json error message' do
+        expect(json['errors'].first['title']).to eq(I18n.t('error_messages.internal_server_error.title'))
+      end
+    end
+  end
 end

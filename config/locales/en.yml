@@ -33,6 +33,12 @@ en:
   error_messages:
     record_not_found:
       title: "I couldn't find the requested user_data in that service"
+    token_not_present:
+      title: No user_data could be found because the token was not provided
+    token_not_valid:
+      title: No user_data could be found because the token was not valid
+    internal_server_error:
+      title: Internal Server Error
     cache_exception: exception getting cache key %{name}
     cmd_failed: 'failing cmd: %{name}'
 
