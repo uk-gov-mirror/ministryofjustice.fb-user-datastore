@@ -12,7 +12,7 @@ production:
 
 init:
 	$(eval export ECR_REPO_NAME=fb-user-datastore-api)
-	$(eval export ECR_REPO_URL=926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder-dev/fb-user-datastore-api)
+	$(eval export ECR_REPO_URL=926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-user-datastore-api)
 
 # install aws cli w/o sudo
 install_build_dependencies: init
