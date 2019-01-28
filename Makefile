@@ -36,4 +36,6 @@ login: init
 push: login
 	docker push ${ECR_REPO_URL}:latest-${env_stub}
 
+build_and_push: build push
+
 .PHONY := init push build login
