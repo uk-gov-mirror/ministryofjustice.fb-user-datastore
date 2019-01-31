@@ -1,5 +1,6 @@
 {
   "name": "fb-user-datastore",
+  "private": true,
   "version": "1.0.0",
   "description": "Form Builder User Datastore",
   "scripts": {
