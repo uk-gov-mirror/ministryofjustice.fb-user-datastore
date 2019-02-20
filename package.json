@@ -1,0 +1,23 @@
+{
+  "name": "fb-user-datastore",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Form Builder User Datastore",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ministryofjustice/fb-user-datastore.git"
+  },
+  "author": "Alex Robinson <alex.robinson@digital.justice.gov.uk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ministryofjustice/fb-user-datastore/issues"
+  },
+  "homepage": "https://github.com/ministryofjustice/fb-user-datastore#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@ministryofjustice/fb-deploy-utils": "^1.0.2"
+  }
+}

@@ -1,0 +1,39 @@
+---
+# web front-end
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "fb-user-datastore-api-{{ .Values.environmentName }}"
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "fb-user-datastore-api-{{ .Values.environmentName }}"
+        appGroup: "fb-user-datastore"
+        fb-service-token-cache-access: "true"
+        tier: "frontend"
+    spec:
+      serviceAccountName: "formbuilder-user-datastore-{{ .Values.environmentName }}"
+      containers:
+      - name: "fb-user-datastore-api-{{ .Values.environmentName }}"
+        image: "926803513772.dkr.ecr.eu-west-1.amazonaws.com/formbuilder/fb-user-datastore-api:latest-{{ .Values.platformEnv }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3000
+        # non-secret env vars
+        # defined in config_map.yaml
+        envFrom:
+          - configMapRef:
+              name: fb-user-datastore-api-env-{{ .Values.environmentName }}
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: rds-instance-formbuilder-user-datastore-{{ .Values.environmentName }}
+                key: url
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: fb-user-datastore-api-secrets-{{ .Values.environmentName }}
+                key: secret_key_base
