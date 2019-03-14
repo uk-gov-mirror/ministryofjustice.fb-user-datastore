@@ -1,6 +1,7 @@
 # fb-user-datastore
-User Data store API for services built &amp; deployed on Form Builder
+[![Build Status](https://travis-ci.org/ministryofjustice/fb-user-datastore.svg?branch=master)](https://travis-ci.org/ministryofjustice/fb-user-datastore)
 
+User Data store API for services built &amp; deployed on Form Builder
 
 # Environment Variables
 
