@@ -11,7 +11,7 @@ gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
 gem 'jwt'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
