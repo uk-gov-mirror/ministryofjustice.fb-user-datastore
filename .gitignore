@@ -65,3 +65,9 @@ bower.json
 node_modules/
 
 spec/examples.txt
+
+# Ignore Rubymine idea folder
+.idea/
+
+# Ignore macOS file
+.DS_Store
