@@ -5,7 +5,6 @@ class EmailsController < ApplicationController
     find_record(record_retrieval_params)
 
     email_data = Email.new(email: email_params[:email_for_sending],
-                           unique_id: SecureRandom.uuid,
                            service_slug: params[:service_slug],
                            encrypted_payload: email_params[:email_details],
                            expires_at: expires,

@@ -44,8 +44,7 @@ RSpec.describe EmailsController, type: :request do
 
       context 'when the email record already exist' do
         let(:existing_record) do
-          Email.create!(id: SecureRandom.uuid,
-                        unique_id: '5db4f4e3-71ef-4784-a03a-2f2a490174f2',
+          Email.create!(id: '5db4f4e3-71ef-4784-a03a-2f2a490174f2',
                         email: 'jane-doe@example.com',
                         service_slug: service_slug,
                         encrypted_payload: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
@@ -63,12 +62,12 @@ RSpec.describe EmailsController, type: :request do
         end
 
         it 'sets validity of existing record to `superseded`' do
-          old_record = Email.find_by_unique_id(existing_record.unique_id)
+          old_record = Email.find_by_id(existing_record.id)
           expect(old_record.validity).to eq('superseded')
         end
 
         it 'sets newest created record validity to `valid`' do
-          new_record = Email.where.not(unique_id: existing_record.unique_id).first
+          new_record = Email.where.not(id: existing_record.id).first
           expect(new_record.validity).to eq('valid')
         end
 
