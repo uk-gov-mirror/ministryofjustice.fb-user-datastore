@@ -1,19 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe EmailsController, type: :request do
-  let(:headers) do
-    {
-      'content-type' => 'application/json'
-    }
+RSpec.describe EmailsController, type: :controller do
+  before :each do
+    request.env['CONTENT_TYPE'] = 'application/json'
   end
 
   let(:service_slug) { 'my-service' }
 
   describe 'POST /service/:service/savereturn/email/add' do
-    let(:url) { "/service/#{service_slug}/savereturn/email/add" }
-
     let(:post_request) do
-      post url, params: params.to_json, headers: headers
+      post :create, params: { service_slug: service_slug },
+                    body: params.to_json
     end
 
     before do
