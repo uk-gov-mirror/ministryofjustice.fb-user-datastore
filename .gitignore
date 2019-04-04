@@ -71,3 +71,5 @@ spec/examples.txt
 
 # Ignore macOS file
 .DS_Store
+
+spec/examples.txt
