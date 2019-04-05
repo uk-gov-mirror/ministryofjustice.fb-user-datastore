@@ -24,10 +24,9 @@ class EmailsController < ApplicationController
   end
 
   def supersede_existing_records
-    email = Email.where(record_retrieval_params).first
-    return if email.nil?
+    emails = Email.where(record_retrieval_params)
 
-    email.update_attributes!(validity: 'superseded')
+    emails.update_all(validity: 'superseded')
   end
 
   def record_retrieval_params

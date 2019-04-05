@@ -39,8 +39,8 @@ RSpec.describe EmailsController, type: :controller do
         end
       end
 
-      context 'when the email record already exist' do
-        let(:existing_record) do
+      context 'when the email records already exist' do
+        let(:existing_record1) do
           Email.create!(id: '5db4f4e3-71ef-4784-a03a-2f2a490174f2',
                         email: 'jane-doe@example.com',
                         service_slug: service_slug,
@@ -49,22 +49,34 @@ RSpec.describe EmailsController, type: :controller do
                         validity: 'valid')
         end
 
+        let(:existing_record2) do
+          Email.create!(id: '5db4f4e3-71ef-4784-a03a-2f2a490174f3',
+                        email: 'jane-doe@example.com',
+                        service_slug: service_slug,
+                        encrypted_payload: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
+                        expires_at: Time.now + 20.minutes,
+                        validity: 'valid')
+        end
+
         before do
-          existing_record
+          existing_record1
+          existing_record2
           post_request
         end
 
-        it 'there are two records with the same email address' do
-          expect(Email.where(email: 'jane-doe@example.com').count).to eq(2)
+        it 'there are multiple records with the same email address' do
+          expect(Email.where(email: 'jane-doe@example.com').count).to eq(3)
         end
 
         it 'sets validity of existing record to `superseded`' do
-          old_record = Email.find_by_id(existing_record.id)
+          old_record = Email.find_by_id(existing_record1.id)
+          expect(old_record.validity).to eq('superseded')
+          old_record = Email.find_by_id(existing_record2.id)
           expect(old_record.validity).to eq('superseded')
         end
 
         it 'sets newest created record validity to `valid`' do
-          new_record = Email.where.not(id: existing_record.id).first
+          new_record = Email.order(created_at: :asc).last
           expect(new_record.validity).to eq('valid')
         end
 
