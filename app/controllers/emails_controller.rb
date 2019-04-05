@@ -8,9 +8,11 @@ class EmailsController < ApplicationController
                            expires_at: expires_at,
                            validity: 'valid')
 
-    email_data.save!
-
-    render status: :created, format: :json
+    if email_data.save
+      return render status: :created, format: :json
+    else
+      return unavailable_error
+    end
   end
 
   private
@@ -25,7 +27,6 @@ class EmailsController < ApplicationController
 
   def supersede_existing_records
     emails = Email.where(record_retrieval_params)
-
     emails.update_all(validity: 'superseded')
   end
 
@@ -35,5 +36,10 @@ class EmailsController < ApplicationController
       encrypted_payload: email_params[:email_details],
       service_slug: params[:service_slug]
     }
+  end
+
+  def unavailable_error
+    render json: { code: 503,
+                   name: 'unavailable' }, status: 503
   end
 end

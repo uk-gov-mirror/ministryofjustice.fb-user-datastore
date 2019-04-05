@@ -17,16 +17,16 @@ RSpec.describe EmailsController, type: :controller do
       allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     end
 
-    context 'with a valid JSON body' do
-      let(:params) do
-        {
-          email_for_sending: 'jane-doe@example.com',
-          email_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
-          duration: 30,
-          link_template: {}
-        }
-      end
+    let(:params) do
+      {
+        email_for_sending: 'jane-doe@example.com',
+        email_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
+        duration: 30,
+        link_template: {}
+      }
+    end
 
+    context 'with a valid JSON body' do
       context 'when the email record does not exist' do
         it 'returns a 201 status' do
           post_request
@@ -82,6 +82,24 @@ RSpec.describe EmailsController, type: :controller do
 
         it 'returns a 201 status' do
           expect(response).to have_http_status(201)
+        end
+      end
+
+      context 'when there is an error' do
+        before :each do
+          allow_any_instance_of(Email).to receive(:save).and_return(false)
+        end
+
+        it 'returns a 503' do
+          post_request
+          expect(response).to have_http_status(503)
+        end
+
+        it 'returns error message' do
+          post_request
+          hash = JSON.parse(response.body)
+          expect(hash['code']).to eql(503)
+          expect(hash['name']).to eql('unavailable')
         end
       end
     end
