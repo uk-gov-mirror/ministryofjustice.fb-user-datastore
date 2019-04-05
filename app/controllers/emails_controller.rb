@@ -1,13 +1,11 @@
 class EmailsController < ApplicationController
   def create
-    expires = Time.now + email_params[:duration].minutes
-
-    find_record(record_retrieval_params)
+    supersede_existing_records
 
     email_data = Email.new(email: email_params[:email_for_sending],
                            service_slug: params[:service_slug],
                            encrypted_payload: email_params[:email_details],
-                           expires_at: expires,
+                           expires_at: expires_at,
                            validity: 'valid')
 
     email_data.save!
@@ -17,12 +15,16 @@ class EmailsController < ApplicationController
 
   private
 
+  def expires_at
+    Time.now + email_params[:duration].minutes
+  end
+
   def email_params
     params.permit(:email_for_sending, :email_details, :duration, :link_template)
   end
 
-  def find_record(attributes)
-    email = Email.where(attributes).first
+  def supersede_existing_records
+    email = Email.where(record_retrieval_params).first
     return if email.nil?
 
     email.update_attributes!(validity: 'superseded')
