@@ -1,0 +1,50 @@
+require 'net/http'
+
+module SaveReturn
+  class ConfirmationEmailSender
+    attr_reader :email, :confirmation_link
+
+    def initialize(email:, confirmation_link:)
+      @email = email
+      @confirmation_link = confirmation_link
+    end
+
+    def call
+      response = http.request(request)
+    end
+
+    private
+
+    def uri
+      URI(ENV['SUBMITTER_URL'])
+    end
+
+    def endpoint
+      URI.join(uri, 'save_return/email_confirmations')
+    end
+
+    def payload
+      { service_slug: service_slug,
+        email: email,
+        confirmation_link: confirmation_link }
+    end
+
+    def service_slug
+      'datastore'
+    end
+
+    def jwt_payload
+      { iat: Time.now.to_i }
+    end
+
+    def http
+      Net::HTTP.new(endpoint.host, endpoint.port)
+    end
+
+    def request
+      request = Net::HTTP::Post.new(endpoint.path, 'Content-Type' => 'application/json', 'X-Access-Token' => JWT.encode(jwt_payload, ENV['SERVICE_TOKEN'], 'HS256'))
+      request.body = payload.to_json
+      request
+    end
+  end
+end

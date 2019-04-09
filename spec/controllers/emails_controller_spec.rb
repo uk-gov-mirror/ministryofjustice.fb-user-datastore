@@ -15,6 +15,8 @@ RSpec.describe EmailsController, type: :controller do
 
     before do
       allow_any_instance_of(ApplicationController).to receive(:verify_token!)
+
+      stub_request(:post, "http://localhost:3000/save_return/email_confirmations").to_return(status: 201)
     end
 
     let(:json_hash) do
@@ -50,6 +52,13 @@ RSpec.describe EmailsController, type: :controller do
           expect(response).to have_http_status(201)
         end
 
+        it 'pings submitter to send email' do
+          mock_sender = double('sender')
+          expect(SaveReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
+          expect(mock_sender).to receive(:call)
+
+          post_request
+        end
       end
 
       context 'when the email records already exist' do
