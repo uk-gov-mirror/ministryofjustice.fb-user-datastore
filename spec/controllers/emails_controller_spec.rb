@@ -66,6 +66,14 @@ RSpec.describe EmailsController, type: :controller do
 
           post_request
         end
+
+        it 'pings submitter to send email' do
+          mock_sender = double('sender')
+          expect(SaveAndReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
+          expect(mock_sender).to receive(:call)
+
+          post_request
+        end
       end
 
       context 'when the email records already exist' do
