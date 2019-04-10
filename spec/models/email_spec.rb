@@ -5,4 +5,36 @@ RSpec.describe Email, type: :model do
   it { should validate_presence_of(:email) }
   it { should validate_presence_of(:encrypted_payload) }
   it { should validate_presence_of(:expires_at) }
+
+  describe '#confirmation_link' do
+    subject do
+      described_class.new(service_slug: 'my-service')
+    end
+
+    before :each do
+      allow(ENV).to receive(:[]).with('ENVIRONMENT_NAME').and_return('my-env')
+    end
+
+    it 'returns correct link' do
+      expect(subject.confirmation_link).to eql('https://my-service-my-env.apps.cloud-platform-live-0.k8s.integration.dsd.io/savereturn/email/confirm/')
+    end
+  end
+
+  describe '#send_confirmation_email' do
+    let(:email) { 'user@example.com'  }
+    let(:service_slug) { 'my-service'  }
+
+    subject do
+      described_class.new(service_slug: service_slug, email: email)
+    end
+
+    it 'calls sender' do
+      mock = double('sender')
+
+      expect(SaveReturn::ConfirmationEmailSender).to receive(:new).with(email: email, confirmation_link: subject.confirmation_link).and_return(mock)
+      expect(mock).to receive(:call)
+
+      subject.send_confirmation_email
+    end
+  end
 end

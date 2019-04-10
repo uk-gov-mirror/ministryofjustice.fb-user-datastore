@@ -2,7 +2,7 @@ class Email < ApplicationRecord
   validates :service_slug, :email, :encrypted_payload, :expires_at, presence: true
 
   def confirmation_link
-    "https://example.com/#{service_slug}/savereturn/email/confirm/#{id}"
+    "https://#{service_slug}-#{ENV['ENVIRONMENT_NAME']}.apps.cloud-platform-live-0.k8s.integration.dsd.io/savereturn/email/confirm/#{id}"
   end
 
   def send_confirmation_email
