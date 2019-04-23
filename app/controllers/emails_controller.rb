@@ -17,7 +17,40 @@ class EmailsController < ApplicationController
     end
   end
 
+  def confirm
+    email = Email.find_by_id(params[:email_token])
+
+    return render_link_invalid unless email
+    return render_expired if email.expired?
+    return render_used if email.used?
+    return render_superseded if email.superseded?
+
+    email.mark_as_used
+
+    render json: { email_details: email.encrypted_payload }, status: :ok
+  end
+
   private
+
+  def render_link_invalid
+    render json: { code: 404,
+                   name: 'invalid.link' }, status: 404
+  end
+
+  def render_expired
+    render json: { code: 410,
+                   name: 'expired.link'}, status: 410
+  end
+
+  def render_used
+    render json: { code: 410,
+                   name: 'used.link'}, status: 410
+  end
+
+  def render_superseded
+    render json: { code: 400,
+                   name: 'superseded.link'}, status: 400
+  end
 
   def expires_at
     Time.now + email_params[:duration].minutes

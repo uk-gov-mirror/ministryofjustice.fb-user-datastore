@@ -3,5 +3,7 @@ Rails.application.routes.draw do
 
   get '/service/:service_slug/user/:user_id', to: 'user_data#show'
   post '/service/:service_slug/user/:user_id', to: 'user_data#create_or_update'
+
   post '/service/:service_slug/savereturn/email/add', to: 'emails#create'
+  post '/service/:service_slug/savereturn/email/confirm', to: 'emails#confirm'
 end

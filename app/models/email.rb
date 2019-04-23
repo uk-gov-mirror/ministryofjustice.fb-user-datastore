@@ -8,4 +8,20 @@ class Email < ApplicationRecord
   def send_confirmation_email
     SaveAndReturn::ConfirmationEmailSender.new(email: email, confirmation_link: confirmation_link).call
   end
+
+  def expired?
+    expires_at < Time.now
+  end
+
+  def superseded?
+    validity == 'superseded'
+  end
+
+  def used?
+    validity == 'used'
+  end
+
+  def mark_as_used
+    update(validity: 'used')
+  end
 end

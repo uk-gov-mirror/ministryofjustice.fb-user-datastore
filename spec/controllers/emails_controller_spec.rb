@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EmailsController, type: :controller do
   before :each do
+    allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
   end
 
@@ -14,8 +15,6 @@ RSpec.describe EmailsController, type: :controller do
     end
 
     before do
-      allow_any_instance_of(ApplicationController).to receive(:verify_token!)
-
       stub_request(:post, "http://localhost:3000/save_return/email_confirmations").to_return(status: 201)
     end
 
@@ -62,7 +61,7 @@ RSpec.describe EmailsController, type: :controller do
 
         it 'pings submitter to send email' do
           mock_sender = double('sender')
-          expect(SaveReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
+          expect(SaveAndReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
           expect(mock_sender).to receive(:call)
 
           post_request
@@ -133,6 +132,99 @@ RSpec.describe EmailsController, type: :controller do
           expect(hash['code']).to eql(503)
           expect(hash['name']).to eql('unavailable')
         end
+      end
+    end
+  end
+
+  describe 'POST #confirm' do
+    context 'happy path' do
+      let(:email) do
+        Email.create!(email: 'user@example.com',
+                      encrypted_email: 'encrypted:user@example.com',
+                      service_slug: 'service-slug',
+                      encrypted_payload: 'foo',
+                      expires_at: 28.days.from_now,
+                      validity: 'valid')
+      end
+
+      before :each do
+        email
+      end
+
+      it 'returns email_details' do
+        post :confirm, params: { service_slug: 'service-slug', email_token: email.id }
+
+        expect(response).to be_successful
+        expect(JSON.parse(response.body)).to eql({ 'email_details' => 'foo' })
+      end
+
+      it 'marks record as used' do
+        expect do
+          post :confirm, params: { service_slug: 'service-slug', email_token: email.id }
+        end.to change { email.reload.validity }.from('valid').to('used')
+      end
+    end
+
+    context 'when email token cannot be found' do
+      it 'returns link invalid' do
+        post :confirm, params: { service_slug: 'service-slug', email_token: 'idontexist' }
+
+        expect(response.status).to eql(404)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 404, 'name' => 'invalid.link' })
+      end
+    end
+
+    context 'when link has expired' do
+      let(:email) do
+        Email.create!(email: 'user@example.com',
+                      encrypted_email: 'encrypted:user@example.com',
+                      service_slug: 'service-slug',
+                      encrypted_payload: 'foo',
+                      expires_at: 10.days.ago,
+                      validity: 'valid')
+      end
+
+      it 'returns expired' do
+        post :confirm, params: { service_slug: email.service_slug, email_token: email.id }
+
+        expect(response.status).to eql(410)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 410, 'name' => 'expired.link' })
+      end
+    end
+
+    context 'when link has already been used' do
+      let(:email) do
+        Email.create!(email: 'user@example.com',
+                      encrypted_email: 'encrypted:user@example.com',
+                      service_slug: 'service-slug',
+                      encrypted_payload: 'foo',
+                      expires_at: 10.days.from_now,
+                      validity: 'used')
+      end
+
+      it 'returns used' do
+        post :confirm, params: { service_slug: email.service_slug, email_token: email.id }
+
+        expect(response.status).to eql(410)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 410, 'name' => 'used.link' })
+      end
+    end
+
+    context 'when link has been superseded' do
+      let(:email) do
+        Email.create!(email: 'user@example.com',
+                      encrypted_email: 'encrypted:user@example.com',
+                      service_slug: 'service-slug',
+                      encrypted_payload: 'foo',
+                      expires_at: 10.days.from_now,
+                      validity: 'superseded')
+      end
+
+      it 'returns superseded error' do
+        post :confirm, params: { service_slug: email.service_slug, email_token: email.id }
+
+        expect(response.status).to eql(400)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'superseded.link' })
       end
     end
   end
