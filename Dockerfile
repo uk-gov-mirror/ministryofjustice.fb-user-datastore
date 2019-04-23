@@ -8,7 +8,7 @@ WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
 RUN gem install bundler
-RUN bundle install --jobs 20 --retry 5
+RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
 ADD . $RAILS_ROOT
