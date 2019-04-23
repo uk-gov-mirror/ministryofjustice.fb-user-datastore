@@ -31,7 +31,7 @@ RSpec.describe Email, type: :model do
     it 'calls sender' do
       mock = double('sender')
 
-      expect(SaveReturn::ConfirmationEmailSender).to receive(:new).with(email: email, confirmation_link: subject.confirmation_link).and_return(mock)
+      expect(SaveAndReturn::ConfirmationEmailSender).to receive(:new).with(email: email, confirmation_link: subject.confirmation_link).and_return(mock)
       expect(mock).to receive(:call)
 
       subject.send_confirmation_email

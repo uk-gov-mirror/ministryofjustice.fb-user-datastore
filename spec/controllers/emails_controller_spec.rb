@@ -54,7 +54,7 @@ RSpec.describe EmailsController, type: :controller do
 
         it 'pings submitter to send email' do
           mock_sender = double('sender')
-          expect(SaveReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
+          expect(SaveAndReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
           expect(mock_sender).to receive(:call)
 
           post_request

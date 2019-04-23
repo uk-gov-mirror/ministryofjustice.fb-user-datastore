@@ -6,6 +6,6 @@ class Email < ApplicationRecord
   end
 
   def send_confirmation_email
-    SaveReturn::ConfirmationEmailSender.new(email: email, confirmation_link: confirmation_link).call
+    SaveAndReturn::ConfirmationEmailSender.new(email: email, confirmation_link: confirmation_link).call
   end
 end
