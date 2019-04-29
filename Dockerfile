@@ -8,7 +8,7 @@ WORKDIR $RAILS_ROOT
 
 COPY Gemfile.lock Gemfile ./
 RUN gem install bundler
-RUN bundle install --jobs 20 --retry 5
+RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 
 COPY . .
 ADD . $RAILS_ROOT
@@ -22,6 +22,9 @@ RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/ap
 RUN apt-get update
 RUN apt-get install -y kubectl
 
+RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
+RUN chown -R deploy $RAILS_ROOT
+USER 1001
 
 # allow access to port 3000
 ENV APP_PORT 3000
