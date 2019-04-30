@@ -64,8 +64,6 @@ bower.json
 # Ignore node_modules
 node_modules/
 
-spec/examples.txt
-
 # Ignore Rubymine idea folder
 .idea/
 
