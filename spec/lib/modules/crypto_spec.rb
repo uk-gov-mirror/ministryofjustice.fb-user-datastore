@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'modules/crypto'
 
-describe Crypto::AES256 do
+RSpec.describe Crypto::AES256 do
   let(:key) { '12345678901234567890abcdefabcdef' }
   let(:payload) {
     {

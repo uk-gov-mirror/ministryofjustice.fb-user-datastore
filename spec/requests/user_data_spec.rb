@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'UserData API', type: :request do
+RSpec.describe 'UserData API', type: :request do
   let(:headers) {
     {
       'content-type' => 'application/json'

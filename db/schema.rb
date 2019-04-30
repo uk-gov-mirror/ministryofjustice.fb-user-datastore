@@ -10,11 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_19_104909) do
+ActiveRecord::Schema.define(version: 2019_04_30_102552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "emails", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email"
+    t.string "service_slug"
+    t.string "encrypted_payload"
+    t.datetime "expires_at"
+    t.string "validity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "encrypted_email", null: false
+  end
+
+  create_table "save_returns", force: :cascade do |t|
+    t.text "encrypted_email", null: false
+    t.text "encrypted_payload", null: false
+    t.text "service", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service", "encrypted_email"], name: "index_save_returns_on_service_and_encrypted_email", unique: true
+  end
 
   create_table "user_data", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_identifier"
