@@ -3,6 +3,7 @@ class EmailsController < ApplicationController
     supersede_existing_records
 
     email_data = Email.new(email: email_params[:email_for_sending],
+                           encrypted_email: email_params[:email],
                            service_slug: params[:service_slug],
                            encrypted_payload: email_params[:email_details],
                            expires_at: expires_at,
@@ -22,7 +23,7 @@ class EmailsController < ApplicationController
   end
 
   def email_params
-    params.permit(:email_for_sending, :email_details, :duration, :link_template)
+    params.permit(:email_for_sending, :email, :email_details, :duration, :link_template)
   end
 
   def supersede_existing_records
