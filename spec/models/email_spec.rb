@@ -8,15 +8,15 @@ RSpec.describe Email, type: :model do
 
   describe '#confirmation_link' do
     subject do
-      described_class.new(service_slug: 'my-service')
-    end
-
-    before :each do
-      allow(ENV).to receive(:[]).with('ENVIRONMENT_NAME').and_return('my-env')
+      described_class.create!(email: 'user@example.com',
+                              encrypted_email: 'encrypted:user@example.com',
+                              encrypted_payload: 'encrypted:payload',
+                              expires_at: 10.days.from_now,
+                              service_slug: 'my-service')
     end
 
     it 'returns correct link' do
-      expect(subject.confirmation_link).to eql('https://my-service-my-env.apps.cloud-platform-live-0.k8s.integration.dsd.io/savereturn/email/confirm/')
+      expect(subject.confirmation_link).to eql("https://my-service.form.service.justice.gov.uk/savereturn/email/confirm/#{subject.id}")
     end
   end
 

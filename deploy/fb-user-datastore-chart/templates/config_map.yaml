@@ -10,3 +10,4 @@ data:
   SERVICE_TOKEN_CACHE_ROOT_URL: "http://fb-service-token-cache-svc-{{ .Values.environmentName }}/"
   SUBMITTER_URL: "http://fb-submitter-api-svc-{{ .Values.environmentName }}"
   ENVIRONMENT_NAME: "{{ .Values.environmentName }}"
+  FORM_URL_SUFFIX: "{{ .Values.formUrlSuffix }}"
