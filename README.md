@@ -19,6 +19,8 @@ The following environment variables are either needed, or read if present:
 * KUBECTL_CONTEXT: (optional) which kubectl context it will look for secrets in
 * SERVICE_TOKEN_CACHE_TTL: expire service token cache entries after this many
   seconds
+* FORM_URL_SUFFIX: URL suffix to the form. The prefix part if the form slug.
+  This is what is sent to the user in emails.
 
 ## To deploy and run on Cloud Platforms
 

@@ -4,3 +4,8 @@ tmp/
 node_modules/
 package.json
 package_lock.json
+coverage/
+log/*.log
+spec/
+.env
+.env.*

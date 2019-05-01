@@ -10,6 +10,7 @@ class EmailsController < ApplicationController
                            validity: 'valid')
 
     if email_data.save
+      email_data.send_confirmation_email
       return render status: :created, format: :json
     else
       return unavailable_error

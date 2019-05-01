@@ -39,3 +39,8 @@ spec:
               secretKeyRef:
                 name: fb-user-datastore-api-secrets-{{ .Values.environmentName }}
                 key: secret_key_base
+          - name: SERVICE_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: fb-platform-datastore-token-{{ .Values.environmentName }}
+                key: token
