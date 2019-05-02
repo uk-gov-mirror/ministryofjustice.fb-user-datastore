@@ -6,4 +6,6 @@ Rails.application.routes.draw do
 
   post '/service/:service_slug/savereturn/email/add', to: 'emails#create'
   post '/service/:service_slug/savereturn/email/confirm', to: 'emails#confirm'
+
+  post '/service/:service_slug/savereturn/create', to: 'save_returns#create'
 end
