@@ -1,6 +1,6 @@
 require 'net/http'
 
-module SaveReturn
+module SaveAndReturn
   class ConfirmationEmailSender
     attr_reader :email, :confirmation_link
 

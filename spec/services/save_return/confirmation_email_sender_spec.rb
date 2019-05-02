@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SaveReturn::ConfirmationEmailSender do
+RSpec.describe SaveAndReturn::ConfirmationEmailSender do
   around :each do |example|
     now = Time.new(2019, 1, 1).utc
 
