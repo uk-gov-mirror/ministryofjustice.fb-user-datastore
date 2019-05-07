@@ -6,4 +6,16 @@ class MagicLink < ApplicationRecord
   def send_magic_link_email
     SaveAndReturn::MagicLinkEmailSender.new(email: email, magic_link: magic_link).call
   end
+
+  def mark_as_used
+    update(validity: 'used')
+  end
+
+  def used?
+    validity == 'used'
+  end
+
+  def expired?
+    expires_at < Time.now
+  end
 end

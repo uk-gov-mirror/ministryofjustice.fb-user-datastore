@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   post '/service/:service_slug/savereturn/create', to: 'save_returns#create'
 
   get '/service/:service_slug/savereturn/signin/email/:email', to: 'signins#email'
+  post '/service/:service_slug/savereturn/signin/magiclink', to: 'signins#magic_link'
 end
