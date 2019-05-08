@@ -9,8 +9,8 @@ RSpec.describe SaveReturnsController, type: :controller do
   describe 'POST #create' do
     let(:json_hash) do
       {
-        email: 'foo@example.com',
-        user_details: 'foo',
+        encrypted_email: 'encrypted:foo@example.com',
+        encrypted_details: 'encrypted:foo',
       }
     end
 
@@ -23,11 +23,12 @@ RSpec.describe SaveReturnsController, type: :controller do
         end.to change(SaveReturn, :count).by(1)
       end
 
-      it 'returns 201 created' do
+      it 'returns 201 with empty json object' do
         post :create, params: { service_slug: 'service-slug' },
                       body: json_hash.to_json
 
         expect(response.status).to eql(201)
+        expect(response.body).to eql('{}')
       end
     end
 
@@ -43,10 +44,21 @@ RSpec.describe SaveReturnsController, type: :controller do
     end
 
     describe 'when creating a duplicate record' do
-      before :each do
-        SaveReturn.create!(encrypted_email: json_hash[:email],
-                           encrypted_payload: json_hash[:user_details],
+      let(:json_hash) do
+        {
+          encrypted_email: 'encrypted:foo@example.com',
+          encrypted_details: 'encrypted:bar',
+        }
+      end
+
+      let(:save_return) do
+        SaveReturn.create!(encrypted_email: 'encrypted:foo@example.com',
+                           encrypted_payload: 'encrypted:foo',
                            service: 'service-slug')
+      end
+
+      before :each do
+        save_return
       end
 
       it 'does not persist another record' do
@@ -57,11 +69,20 @@ RSpec.describe SaveReturnsController, type: :controller do
         end.to_not change(SaveReturn, :count)
       end
 
-      it 'returns 200' do
+      it 'updates existing record' do
+        expect do
+          post :create, params: { service_slug: 'service-slug' },
+                        body: json_hash.to_json
+
+        end.to change { save_return.reload.encrypted_payload }.from('encrypted:foo').to('encrypted:bar')
+      end
+
+      it 'returns 200 with empty json object' do
         post :create, params: { service_slug: 'service-slug' },
                       body: json_hash.to_json
 
         expect(response.status).to eql(200)
+        expect(response.body).to eql('{}')
       end
     end
   end

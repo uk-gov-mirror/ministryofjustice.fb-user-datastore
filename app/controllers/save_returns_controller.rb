@@ -1,10 +1,15 @@
 class SaveReturnsController < ApplicationController
   def create
-    if SaveReturn.find_by(save_return_hash)
-      return head :ok
+    save_return = SaveReturn.find_by(service: params[:service_slug],
+                                     encrypted_email: params[:encrypted_email])
+
+    if save_return
+      save_return.update(save_return_hash)
+
+      return render json: {}, status: :ok
     else
       if SaveReturn.create(save_return_hash)
-        return head :created
+        return render json: {}, status: :created
       else
         return head :internal_server_error
       end
@@ -13,15 +18,11 @@ class SaveReturnsController < ApplicationController
 
   private
 
-  def save_return_params
-    params.permit(:email, :user_details)
-  end
-
   def save_return_hash
     {
       service: params[:service_slug],
-      encrypted_email: save_return_params[:email],
-      encrypted_payload: save_return_params[:user_details]
+      encrypted_email: params[:encrypted_email],
+      encrypted_payload: params[:encrypted_details]
     }
   end
 end
