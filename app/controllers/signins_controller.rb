@@ -14,8 +14,7 @@ class SigninsController < ApplicationController
   end
 
   def magic_link
-    magic_link = MagicLink.order(created_at: :desc)
-                          .find_by(service_slug: params[:service_slug],
+    magic_link = MagicLink.find_by(service_slug: params[:service_slug],
                                    id: params[:magiclink])
 
     return render_magic_link_missing_error unless magic_link
