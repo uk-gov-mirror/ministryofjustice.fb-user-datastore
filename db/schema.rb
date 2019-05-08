@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_08_143741) do
+ActiveRecord::Schema.define(version: 2019_05_08_144516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2019_05_08_143741) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "encrypted_email", null: false
+    t.index ["service_slug", "encrypted_email"], name: "index_emails_on_service_slug_and_encrypted_email"
   end
 
   create_table "magic_links", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -35,7 +36,7 @@ ActiveRecord::Schema.define(version: 2019_05_08_143741) do
     t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["encrypted_email"], name: "index_magic_links_on_encrypted_email"
+    t.index ["service_slug", "encrypted_email"], name: "index_magic_links_on_service_slug_and_encrypted_email"
   end
 
   create_table "save_returns", force: :cascade do |t|
