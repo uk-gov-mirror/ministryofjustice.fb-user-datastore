@@ -1,6 +1,6 @@
 class SaveReturnsController < ApplicationController
   def create
-    save_return = SaveReturn.find_by(service: params[:service_slug],
+    save_return = SaveReturn.find_by(service_slug: params[:service_slug],
                                      encrypted_email: params[:encrypted_email])
 
     if save_return
@@ -17,13 +17,13 @@ class SaveReturnsController < ApplicationController
   end
 
   def delete
-    save_returns = SaveReturn.where(service: params[:service_slug],
+    save_returns = SaveReturn.where(service_slug: params[:service_slug],
                                     encrypted_email: params[:encrypted_email])
 
     emails = Email.where(service_slug: params[:service_slug],
                          encrypted_email: params[:encrypted_email])
 
-    magic_links = MagicLink.where(service: params[:service_slug],
+    magic_links = MagicLink.where(service_slug: params[:service_slug],
                                   encrypted_email: params[:encrypted_email])
 
     ActiveRecord::Base.transaction do
@@ -37,7 +37,7 @@ class SaveReturnsController < ApplicationController
 
   def save_return_hash
     {
-      service: params[:service_slug],
+      service_slug: params[:service_slug],
       encrypted_email: params[:encrypted_email],
       encrypted_payload: params[:encrypted_details]
     }
