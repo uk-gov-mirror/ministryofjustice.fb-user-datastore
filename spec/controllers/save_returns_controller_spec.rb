@@ -86,4 +86,71 @@ RSpec.describe SaveReturnsController, type: :controller do
       end
     end
   end
+
+  describe 'DELETE #delete' do
+    let(:json_hash) do
+      {
+        encrypted_email: 'encrypted:user@example.com',
+      }
+    end
+
+    describe 'happy path' do
+      let!(:save_return) do
+        SaveReturn.create!(service: 'service-slug',
+                           encrypted_email: 'encrypted:user@example.com',
+                           encrypted_payload: 'encrypted:payload')
+      end
+
+      it 'deletes record' do
+        expect do
+          delete :delete, params: { service_slug: 'service-slug' },
+                          body: json_hash.to_json
+
+        end.to change(SaveReturn, :count).by(-1)
+      end
+
+      it 'returns 200 with empty json object' do
+        delete :delete, params: { service_slug: 'service-slug' },
+                        body: json_hash.to_json
+
+        expect(response.status).to eql(200)
+        expect(response.body).to eql('{}')
+      end
+
+      context 'when associated emails exist' do
+        let!(:email) do
+          Email.create!(service_slug: 'service-slug',
+                        email: 'user@example.com',
+                        encrypted_email: 'encrypted:user@example.com',
+                        encrypted_payload: 'encrypted:payload',
+                        expires_at: 2.hours.from_now)
+        end
+
+        it 'deletes them' do
+          expect do
+            delete :delete, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          end.to change(Email, :count).by(-1)
+        end
+      end
+
+      context 'when associated magic links exist' do
+        let!(:magic_link) do
+          MagicLink.create!(service: 'service-slug',
+                            email: 'user@example.com',
+                            encrypted_email: 'encrypted:user@example.com',
+                            expires_at: 2.hours.from_now)
+        end
+
+        it 'deletes them' do
+          expect do
+            delete :delete, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          end.to change(MagicLink, :count).by(-1)
+        end
+      end
+    end
+  end
 end

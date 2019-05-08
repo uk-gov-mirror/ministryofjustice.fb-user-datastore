@@ -16,6 +16,23 @@ class SaveReturnsController < ApplicationController
     end
   end
 
+  def delete
+    save_returns = SaveReturn.where(service: params[:service_slug],
+                                    encrypted_email: params[:encrypted_email])
+
+    emails = Email.where(service_slug: params[:service_slug],
+                         encrypted_email: params[:encrypted_email])
+
+    magic_links = MagicLink.where(service: params[:service_slug],
+                                  encrypted_email: params[:encrypted_email])
+
+    ActiveRecord::Base.transaction do
+      if save_returns.destroy_all && emails.destroy_all && magic_links.destroy_all
+        return render json: {}, status: :ok
+      end
+    end
+  end
+
   private
 
   def save_return_hash
