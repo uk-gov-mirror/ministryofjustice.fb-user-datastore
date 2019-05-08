@@ -20,9 +20,9 @@ RSpec.describe EmailsController, type: :controller do
 
     let(:json_hash) do
       {
-        email_for_sending: 'jane-doe@example.com',
-        email: 'encrypted:jane-doe@example.com',
-        email_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
+        email: 'jane-doe@example.com',
+        encrypted_email: 'encrypted:jane-doe@example.com',
+        encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
         duration: 30,
         link_template: '',
       }
@@ -41,14 +41,22 @@ RSpec.describe EmailsController, type: :controller do
 
           record = Email.last
 
-          expect(record.email).to eq(json_hash[:email_for_sending])
-          expect(record.encrypted_email).to eq(json_hash[:email])
+          expect(record.email).to eq(json_hash[:email])
+          expect(record.encrypted_email).to eq(json_hash[:encrypted_email])
+          expect(record.service_slug).to eq('my-service')
+          expect(record.encrypted_payload).to eq(json_hash[:encrypted_details])
+          expect(record.expires_at).to_not be_blank
           expect(record.validity).to eq('valid')
         end
 
         it 'returns a 201 status' do
           post_request
           expect(response).to have_http_status(201)
+        end
+
+        it 'retuns empty json object' do
+          post_request
+          expect(response.body).to eql('{}')
         end
 
         it 'pings submitter to send email' do
