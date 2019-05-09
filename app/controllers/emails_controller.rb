@@ -2,16 +2,16 @@ class EmailsController < ApplicationController
   def create
     supersede_existing_records
 
-    email_data = Email.new(email: email_params[:email_for_sending],
-                           encrypted_email: email_params[:email],
+    email_data = Email.new(email: params[:email],
+                           encrypted_email: params[:encrypted_email],
                            service_slug: params[:service_slug],
-                           encrypted_payload: email_params[:email_details],
+                           encrypted_payload: params[:encrypted_details],
                            expires_at: expires_at,
                            validity: 'valid')
 
     if email_data.save
       email_data.send_confirmation_email
-      return render status: :created, format: :json
+      return render json: {}, status: :created
     else
       return unavailable_error
     end
@@ -53,11 +53,7 @@ class EmailsController < ApplicationController
   end
 
   def expires_at
-    Time.now + email_params[:duration].minutes
-  end
-
-  def email_params
-    params.permit(:email_for_sending, :email, :email_details, :duration, :link_template)
+    Time.now + params[:duration].minutes
   end
 
   def supersede_existing_records
@@ -67,8 +63,7 @@ class EmailsController < ApplicationController
 
   def record_retrieval_params
     {
-      email: email_params[:email_for_sending],
-      encrypted_payload: email_params[:email_details],
+      encrypted_email: params[:encrypted_email],
       service_slug: params[:service_slug]
     }
   end
