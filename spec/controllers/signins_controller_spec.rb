@@ -8,21 +8,27 @@ RSpec.describe SigninsController do
   end
 
   describe 'GET /service/:service_slug/savereturn/signin/email/:email' do
-    let(:do_get!) do
-      get :email, params: { service_slug: 'service-slug',
-                            email_for_sending: 'user@example.com',
-                            email: 'encrypted:user@example.com' }
+    let(:json_hash) do
+      {
+        email: 'user@example.com',
+        encrypted_email: 'encrypted:user@example.com'
+      }
+    end
+
+    let(:do_post!) do
+      post :email, params: { service_slug: 'service-slug' },
+                   body: json_hash.to_json
     end
 
     describe 'happy path' do
       it 'creates magic link record' do
         expect do
-          do_get!
+          do_post!
         end.to change(MagicLink, :count).by(1)
       end
 
       it 'persists magic link record correctly' do
-        do_get!
+        do_post!
 
         record = MagicLink.last
 
@@ -38,7 +44,12 @@ RSpec.describe SigninsController do
         expect(SaveAndReturn::MagicLinkEmailSender).to receive(:new).and_return(mock_sender)
         expect(mock_sender).to receive(:call)
 
-        do_get!
+        do_post!
+      end
+
+      it 'responds with empty json object' do
+        do_post!
+        expect(response.body).to eql("{}")
       end
     end
 
@@ -52,13 +63,13 @@ RSpec.describe SigninsController do
 
       it 'marks previous records as superseded' do
         expect do
-          do_get!
+          do_post!
         end.to change { previous_magic_link.reload.validity }.from('valid').to('superseded')
       end
 
       it 'creates new magic link record' do
         expect do
-          do_get!
+          do_post!
         end.to change(MagicLink, :count).by(1)
       end
     end
