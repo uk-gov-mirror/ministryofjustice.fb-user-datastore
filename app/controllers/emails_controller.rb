@@ -53,7 +53,19 @@ class EmailsController < ApplicationController
   end
 
   def expires_at
-    Time.now + params[:duration].minutes
+    Time.now + duration
+  end
+
+  def duration
+    if params[:duration]
+      params[:duration].to_i.minutes
+    else
+      default_duration
+    end
+  end
+
+  def default_duration
+    120.minutes
   end
 
   def supersede_existing_records
