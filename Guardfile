@@ -69,3 +69,13 @@ guard :rspec, cmd: 'bundle exec rspec', all_on_start: true,
     Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
   end
 end
+
+# Add files and commands to this file, like the example:
+#   watch(%r{file/path}) { `command(s)` }
+#
+guard :shell do
+  watch(/spec\/integration\/(.*)_spec.rb/) do |m|
+    `echo "Generating swagger docs"`
+    `bundle exec rake rswag:specs:swaggerize`
+  end
+end

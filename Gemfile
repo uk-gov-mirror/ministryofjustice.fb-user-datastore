@@ -14,11 +14,15 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '>= 3.5.0'
   gem 'dotenv-rails', require: 'dotenv/rails-now'
+  gem 'rswag-specs'
 end
 
 group :development do
   gem 'listen'
   gem 'guard-rspec', require: false
+  gem 'rswag-api'
+  gem 'rswag-ui'
+  gem 'guard-shell'
 end
 
 group :test do

@@ -1,0 +1,291 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API V1",
+    "version": "v1",
+    "description": "JWT is used for authenticating with this API. For the purposes of swagger, JWT has been disabled and no authentication is required."
+  },
+  "paths": {
+    "/service/{service_slug}/savereturn/email/add": {
+      "post": {
+        "summary": "send confirmation email to user",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                },
+                "encrypted_details": {
+                  "type": "string",
+                  "example": "encrypted:payload"
+                },
+                "duration": {
+                  "type": "integer",
+                  "required": false,
+                  "default": 120,
+                  "example": 120
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "email confirmation created"
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/email/confirm": {
+      "post": {
+        "summary": "confirm email from magiclink",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email_token": {
+                  "type": "string",
+                  "required": true,
+                  "example": "49a69c4c-5f6c-4e36-98f1-c0a4b822128d"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "magiclink correct and processed"
+          },
+          "404": {
+            "description": "magic link not found"
+          },
+          "410": {
+            "description": "magiclink already used or expired"
+          },
+          "400": {
+            "description": "magiclink superseded"
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/create": {
+      "post": {
+        "summary": "create save and return record for user",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                },
+                "encrypted_details": {
+                  "type": "string",
+                  "example": "encrypted:payload"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "save and return record created"
+          },
+          "200": {
+            "description": "save and return record updated"
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/delete": {
+      "delete": {
+        "summary": "delete save and return record",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "encrypted_email": {
+                  "type": "string",
+                  "required": true,
+                  "example": "user@example.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "save and return record deleted"
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/signin/email": {
+      "post": {
+        "summary": "send signin email to user",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                },
+                "encrypted_details": {
+                  "type": "string",
+                  "example": "encrypted:payload"
+                },
+                "duration": {
+                  "type": "integer",
+                  "required": false,
+                  "default": 120,
+                  "example": 120
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "email confirmation created"
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/signin/magiclink": {
+      "post": {
+        "summary": "confirm magiclink",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "magiclink": {
+                  "type": "string",
+                  "required": true,
+                  "example": "352ded7d-405b-44d5-b825-de8f39fd5869"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "magiclink correct and processed"
+          },
+          "404": {
+            "description": "magic link not found"
+          },
+          "400": {
+            "description": "magiclink already used or expired"
+          }
+        }
+      }
+    }
+  }
+}

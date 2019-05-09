@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  if Rails.env.development?
+    mount Rswag::Ui::Engine => '/api-docs'
+    mount Rswag::Api::Engine => '/api-docs'
+  end
+
   get '/service/:service_slug/user/:user_id', to: 'user_data#show'
   post '/service/:service_slug/user/:user_id', to: 'user_data#create_or_update'
 
