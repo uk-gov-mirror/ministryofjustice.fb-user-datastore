@@ -9,7 +9,9 @@ RSpec.describe SigninsController do
 
   describe 'GET /service/:service_slug/savereturn/signin/email/:email' do
     let(:do_get!) do
-      get :email, params: { service_slug: 'service-slug', email_for_sending: 'user@example.com', email: 'encrypted:user@example.com' }
+      get :email, params: { service_slug: 'service-slug',
+                            email_for_sending: 'user@example.com',
+                            email: 'encrypted:user@example.com' }
     end
 
     describe 'happy path' do
@@ -58,6 +60,120 @@ RSpec.describe SigninsController do
         expect do
           do_get!
         end.to change(MagicLink, :count).by(1)
+      end
+    end
+  end
+
+  describe 'POST /service/:service_slug/savereturn/signin/magiclink' do
+    let(:json_hash) do
+      { 'magiclink': magic_link.id }
+    end
+
+    let(:magic_link) do
+      MagicLink.create!(service: 'service-slug',
+                        email: 'user@example.com',
+                        encrypted_email: 'encrypted:user@example.com',
+                        expires_at: 24.hours.from_now)
+    end
+
+    let(:save_return) do
+      SaveReturn.create!(service: 'service-slug',
+                         encrypted_email: 'encrypted:user@example.com',
+                         encrypted_payload: 'encrypted:payload',
+                         expires_at: 28.days.from_now)
+    end
+
+    describe 'happy paths' do
+      before :each do
+        save_return
+        magic_link
+      end
+
+      it 'returns encrypted payload from save and return record' do
+        post :magic_link, params: { service_slug: 'service-slug' },
+                          body: json_hash.to_json
+
+        expect(JSON.parse(response.body)).to eql({ 'encrypted_details' => 'encrypted:payload' })
+      end
+
+      it 'marks magic link as used' do
+        expect do
+          post :magic_link, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+        end.to change { magic_link.reload.validity }.from('valid').to('used')
+      end
+    end
+
+    describe 'sad paths' do
+      context 'when magic link does not exist' do
+        let(:json_hash) do
+          { 'magiclink': 'i-do-not-exist' }
+        end
+
+        it 'returns 404 with error' do
+          post :magic_link, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          expect(response.status).to eql(404)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 404, 'name' => 'invalid.link' })
+        end
+      end
+
+      context 'when magic link is used' do
+        let(:magic_link) do
+          MagicLink.create!(service: 'service-slug',
+                            email: 'user@example.com',
+                            encrypted_email: 'encrypted:user@example.com',
+                            validity: 'used',
+                            expires_at: 24.hours.from_now)
+        end
+
+        before :each do
+          magic_link
+        end
+
+        it 'returns 400 with error' do
+          post :magic_link, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          expect(response.status).to eql(400)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'used.link' })
+        end
+      end
+
+      context 'when magic link has expired' do
+        let(:magic_link) do
+          MagicLink.create!(service: 'service-slug',
+                            email: 'user@example.com',
+                            encrypted_email: 'encrypted:user@example.com',
+                            expires_at: 10.hours.ago)
+        end
+
+        before :each do
+          magic_link
+        end
+
+        it 'returns 400 with error' do
+          post :magic_link, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          expect(response.status).to eql(400)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'expired.link' })
+        end
+      end
+
+      context 'when no associated save and return record' do
+        before :each do
+          magic_link
+        end
+
+        it 'returns 500 with error' do
+          post :magic_link, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          expect(response.status).to eql(500)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 500, 'name' => 'missing.savereturn' })
+        end
       end
     end
   end
