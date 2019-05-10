@@ -1,27 +1,45 @@
 class SaveReturnsController < ApplicationController
   def create
-    if SaveReturn.find_by(save_return_hash)
-      return head :ok
+    save_return = SaveReturn.find_by(service: params[:service_slug],
+                                     encrypted_email: params[:encrypted_email])
+
+    if save_return
+      save_return.update(save_return_hash)
+
+      return render json: {}, status: :ok
     else
       if SaveReturn.create(save_return_hash)
-        return head :created
+        return render json: {}, status: :created
       else
         return head :internal_server_error
       end
     end
   end
 
-  private
+  def delete
+    save_returns = SaveReturn.where(service: params[:service_slug],
+                                    encrypted_email: params[:encrypted_email])
 
-  def save_return_params
-    params.permit(:email, :user_details)
+    emails = Email.where(service_slug: params[:service_slug],
+                         encrypted_email: params[:encrypted_email])
+
+    magic_links = MagicLink.where(service: params[:service_slug],
+                                  encrypted_email: params[:encrypted_email])
+
+    ActiveRecord::Base.transaction do
+      if save_returns.destroy_all && emails.destroy_all && magic_links.destroy_all
+        return render json: {}, status: :ok
+      end
+    end
   end
+
+  private
 
   def save_return_hash
     {
       service: params[:service_slug],
-      encrypted_email: save_return_params[:email],
-      encrypted_payload: save_return_params[:user_details]
+      encrypted_email: params[:encrypted_email],
+      encrypted_payload: params[:encrypted_details]
     }
   end
 end
