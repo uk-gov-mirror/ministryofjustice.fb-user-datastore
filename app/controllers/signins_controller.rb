@@ -6,6 +6,7 @@ class SigninsController < ApplicationController
                                email: params[:email],
                                encrypted_email: params[:encrypted_email],
                                validation_url: params[:validation_url],
+                               template_context: params[:template_context],
                                expires_at: expires_at)
 
     if magic_link.save
