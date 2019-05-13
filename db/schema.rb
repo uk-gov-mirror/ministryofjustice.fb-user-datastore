@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_143109) do
+ActiveRecord::Schema.define(version: 2019_05_08_144516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,27 +25,28 @@ ActiveRecord::Schema.define(version: 2019_05_02_143109) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "encrypted_email", null: false
+    t.index ["service_slug", "encrypted_email"], name: "index_emails_on_service_slug_and_encrypted_email"
   end
 
   create_table "magic_links", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "service", null: false
+    t.text "service_slug", null: false
     t.text "email", null: false
     t.text "encrypted_email", null: false
     t.text "validity", default: "valid", null: false
     t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["encrypted_email"], name: "index_magic_links_on_encrypted_email"
+    t.index ["service_slug", "encrypted_email"], name: "index_magic_links_on_service_slug_and_encrypted_email"
   end
 
   create_table "save_returns", force: :cascade do |t|
     t.text "encrypted_email", null: false
     t.text "encrypted_payload", null: false
-    t.text "service", null: false
+    t.text "service_slug", null: false
     t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["service", "encrypted_email"], name: "index_save_returns_on_service_and_encrypted_email", unique: true
+    t.index ["service_slug", "encrypted_email"], name: "index_save_returns_on_service_slug_and_encrypted_email", unique: true
   end
 
   create_table "user_data", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

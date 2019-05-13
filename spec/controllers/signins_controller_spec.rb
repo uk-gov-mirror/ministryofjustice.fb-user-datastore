@@ -32,7 +32,7 @@ RSpec.describe SigninsController do
 
         record = MagicLink.last
 
-        expect(record.service).to eql('service-slug')
+        expect(record.service_slug).to eql('service-slug')
         expect(record.email).to eql('user@example.com')
         expect(record.encrypted_email).to eql('encrypted:user@example.com')
         expect(record.expires_at).to be_within(2.hours).of(24.hours.from_now)
@@ -55,7 +55,7 @@ RSpec.describe SigninsController do
 
     describe 'if magic link for email already exists' do
       let!(:previous_magic_link) do
-        MagicLink.create!(service: 'service-slug',
+        MagicLink.create!(service_slug: 'service-slug',
                           email: 'user@example.com',
                           encrypted_email: 'encrypted:user@example.com',
                           expires_at: 24.hours.from_now)
@@ -81,14 +81,14 @@ RSpec.describe SigninsController do
     end
 
     let(:magic_link) do
-      MagicLink.create!(service: 'service-slug',
+      MagicLink.create!(service_slug: 'service-slug',
                         email: 'user@example.com',
                         encrypted_email: 'encrypted:user@example.com',
                         expires_at: 24.hours.from_now)
     end
 
     let(:save_return) do
-      SaveReturn.create!(service: 'service-slug',
+      SaveReturn.create!(service_slug: 'service-slug',
                          encrypted_email: 'encrypted:user@example.com',
                          encrypted_payload: 'encrypted:payload',
                          expires_at: 28.days.from_now)
@@ -132,7 +132,7 @@ RSpec.describe SigninsController do
 
       context 'when magic link is used' do
         let(:magic_link) do
-          MagicLink.create!(service: 'service-slug',
+          MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
                             validity: 'used',
@@ -154,7 +154,7 @@ RSpec.describe SigninsController do
 
       context 'when magic link has expired' do
         let(:magic_link) do
-          MagicLink.create!(service: 'service-slug',
+          MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
                             expires_at: 10.hours.ago)

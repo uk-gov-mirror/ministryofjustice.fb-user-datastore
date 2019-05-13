@@ -54,7 +54,7 @@ RSpec.describe SaveReturnsController, type: :controller do
       let(:save_return) do
         SaveReturn.create!(encrypted_email: 'encrypted:foo@example.com',
                            encrypted_payload: 'encrypted:foo',
-                           service: 'service-slug')
+                           service_slug: 'service-slug')
       end
 
       before :each do
@@ -96,7 +96,7 @@ RSpec.describe SaveReturnsController, type: :controller do
 
     describe 'happy path' do
       let!(:save_return) do
-        SaveReturn.create!(service: 'service-slug',
+        SaveReturn.create!(service_slug: 'service-slug',
                            encrypted_email: 'encrypted:user@example.com',
                            encrypted_payload: 'encrypted:payload')
       end
@@ -137,7 +137,7 @@ RSpec.describe SaveReturnsController, type: :controller do
 
       context 'when associated magic links exist' do
         let!(:magic_link) do
-          MagicLink.create!(service: 'service-slug',
+          MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
                             expires_at: 2.hours.from_now)
