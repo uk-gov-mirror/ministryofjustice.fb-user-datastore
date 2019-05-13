@@ -2,11 +2,12 @@ require 'net/http'
 
 module SaveAndReturn
   class MagicLinkEmailSender
-    attr_reader :email, :magic_link
+    attr_reader :email, :magic_link, :template_context
 
-    def initialize(email:, magic_link:)
+    def initialize(email:, magic_link:, template_context: {})
       @email = email
       @magic_link = magic_link
+      @template_context = template_context
     end
 
     def call
@@ -26,7 +27,8 @@ module SaveAndReturn
     def payload
       { service_slug: service_slug,
         email: email,
-        magic_link: magic_link }
+        magic_link: magic_link,
+        template_context: template_context }
     end
 
     def service_slug

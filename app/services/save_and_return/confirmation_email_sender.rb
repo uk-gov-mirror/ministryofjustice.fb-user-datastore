@@ -2,11 +2,12 @@ require 'net/http'
 
 module SaveAndReturn
   class ConfirmationEmailSender
-    attr_reader :email, :confirmation_link
+    attr_reader :email, :confirmation_link, :template_context
 
-    def initialize(email:, confirmation_link:)
+    def initialize(email:, confirmation_link:, template_context: {})
       @email = email
       @confirmation_link = confirmation_link
+      @template_context = template_context
     end
 
     def call
@@ -26,7 +27,8 @@ module SaveAndReturn
     def payload
       { service_slug: service_slug,
         email: email,
-        confirmation_link: confirmation_link }
+        confirmation_link: confirmation_link,
+        template_context: template_context }
     end
 
     def service_slug

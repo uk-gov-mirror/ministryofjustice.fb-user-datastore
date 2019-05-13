@@ -12,11 +12,16 @@ RSpec.describe SaveAndReturn::ConfirmationEmailSender do
   describe '#call' do
     subject do
       described_class.new(email: 'user@example.com',
-                          confirmation_link: 'https://example.com/foo')
+                          confirmation_link: 'https://example.com/foo',
+                          template_context: {
+                            a: true,
+                            b: 1,
+                            c: 'foo'
+                          })
     end
 
     it 'makes correct request' do
-      expected_body = '{"service_slug":"datastore","email":"user@example.com","confirmation_link":"https://example.com/foo"}'
+      expected_body = '{"service_slug":"datastore","email":"user@example.com","confirmation_link":"https://example.com/foo","template_context":{"a":true,"b":1,"c":"foo"}}'
 
       expected_headers = {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Access-Token'=>'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDYzMDA4MDB9.xknzXLc6El1fxdwmm9-r2QvZMINKWG1zrC9nt6b2-5E' }
 
