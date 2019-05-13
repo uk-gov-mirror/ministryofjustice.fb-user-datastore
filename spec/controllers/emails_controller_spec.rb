@@ -29,6 +29,29 @@ RSpec.describe EmailsController, type: :controller do
     end
 
     context 'with a valid JSON body' do
+      context 'when template_context is provided' do
+        let(:json_hash) do
+          {
+            email: 'jane-doe@example.com',
+            encrypted_email: 'encrypted:jane-doe@example.com',
+            encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
+            duration: 30,
+            validation_url: 'https://example.com',
+            template_context: {"a":true,"b":1,"c":"foo"}
+          }
+        end
+
+        it 'sets record values correctly' do
+          post_request
+
+          record = Email.last
+
+          expect(record.template_context['a']).to eq(true)
+          expect(record.template_context['b']).to eq(1)
+          expect(record.template_context['c']).to eq('foo')
+        end
+      end
+
       context 'when the email record does not exist' do
         it 'persists the record' do
           expect do
