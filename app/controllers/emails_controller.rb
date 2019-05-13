@@ -29,7 +29,7 @@ class EmailsController < ApplicationController
 
     email.mark_as_used
 
-    render json: { email_details: email.encrypted_payload }, status: :ok
+    render json: { encrypted_details: email.encrypted_payload }, status: :ok
   end
 
   private

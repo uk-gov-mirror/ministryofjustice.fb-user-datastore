@@ -182,7 +182,7 @@ RSpec.describe EmailsController, type: :controller do
         post :confirm, params: { service_slug: 'service-slug', email_token: email.id }
 
         expect(response).to be_successful
-        expect(JSON.parse(response.body)).to eql({ 'email_details' => 'foo' })
+        expect(JSON.parse(response.body)).to eql({ 'encrypted_details' => 'foo' })
       end
 
       it 'marks record as used' do
