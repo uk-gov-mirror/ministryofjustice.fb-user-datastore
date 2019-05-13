@@ -24,7 +24,7 @@ RSpec.describe EmailsController, type: :controller do
         encrypted_email: 'encrypted:jane-doe@example.com',
         encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
         duration: 30,
-        link_template: '',
+        validation_url: 'https://example.com',
       }
     end
 
@@ -47,6 +47,7 @@ RSpec.describe EmailsController, type: :controller do
           expect(record.encrypted_payload).to eq(json_hash[:encrypted_details])
           expect(record.expires_at).to_not be_blank
           expect(record.validity).to eq('valid')
+          expect(record.validation_url).to eq('https://example.com')
         end
 
         it 'returns a 201 status' do
@@ -75,6 +76,7 @@ RSpec.describe EmailsController, type: :controller do
                         encrypted_email: 'encrypted:jane-doe@example.com',
                         service_slug: service_slug,
                         encrypted_payload: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
+                        validation_url: 'https://example.com',
                         expires_at: Time.now + 20.minutes,
                         validity: 'valid')
         end
@@ -85,6 +87,7 @@ RSpec.describe EmailsController, type: :controller do
                         encrypted_email: 'encrypted:jane-doe@example.com',
                         service_slug: service_slug,
                         encrypted_payload: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
+                        validation_url: 'https://example.com',
                         expires_at: Time.now + 20.minutes,
                         validity: 'valid')
         end
@@ -143,6 +146,7 @@ RSpec.describe EmailsController, type: :controller do
                       encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
+                      validation_url: 'https://example.com',
                       expires_at: 28.days.from_now,
                       validity: 'valid')
       end
@@ -180,6 +184,7 @@ RSpec.describe EmailsController, type: :controller do
                       encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
+                      validation_url: 'https://example.com',
                       expires_at: 10.days.ago,
                       validity: 'valid')
       end
@@ -198,6 +203,7 @@ RSpec.describe EmailsController, type: :controller do
                       encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
+                      validation_url: 'https://example.com',
                       expires_at: 10.days.from_now,
                       validity: 'used')
       end
@@ -216,6 +222,7 @@ RSpec.describe EmailsController, type: :controller do
                       encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
+                      validation_url: 'https://example.com',
                       expires_at: 10.days.from_now,
                       validity: 'superseded')
       end

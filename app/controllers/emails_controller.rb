@@ -6,6 +6,7 @@ class EmailsController < ApplicationController
                            encrypted_email: params[:encrypted_email],
                            service_slug: params[:service_slug],
                            encrypted_payload: params[:encrypted_details],
+                           validation_url: params[:validation_url],
                            expires_at: expires_at,
                            validity: 'valid')
 

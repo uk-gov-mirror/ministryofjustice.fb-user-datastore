@@ -11,6 +11,7 @@ RSpec.describe Email, type: :model do
       described_class.create!(email: 'user@example.com',
                               encrypted_email: 'encrypted:user@example.com',
                               encrypted_payload: 'encrypted:payload',
+                              validation_url: 'https://example.com',
                               expires_at: 10.days.from_now,
                               service_slug: 'my-service')
     end
