@@ -5,6 +5,7 @@ class SigninsController < ApplicationController
     magic_link = MagicLink.new(service_slug: params[:service_slug],
                                email: params[:email],
                                encrypted_email: params[:encrypted_email],
+                               validation_url: params[:validation_url],
                                expires_at: expires_at)
 
     if magic_link.save

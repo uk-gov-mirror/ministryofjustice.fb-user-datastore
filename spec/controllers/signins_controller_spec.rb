@@ -11,7 +11,8 @@ RSpec.describe SigninsController do
     let(:json_hash) do
       {
         email: 'user@example.com',
-        encrypted_email: 'encrypted:user@example.com'
+        encrypted_email: 'encrypted:user@example.com',
+        validation_url: 'https://example.com'
       }
     end
 
@@ -58,6 +59,7 @@ RSpec.describe SigninsController do
         MagicLink.create!(service_slug: 'service-slug',
                           email: 'user@example.com',
                           encrypted_email: 'encrypted:user@example.com',
+                          validation_url: 'https://example.com',
                           expires_at: 24.hours.from_now)
       end
 
@@ -84,6 +86,7 @@ RSpec.describe SigninsController do
       MagicLink.create!(service_slug: 'service-slug',
                         email: 'user@example.com',
                         encrypted_email: 'encrypted:user@example.com',
+                        validation_url: 'https://example.com',
                         expires_at: 24.hours.from_now)
     end
 
@@ -135,6 +138,7 @@ RSpec.describe SigninsController do
           MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             validity: 'used',
                             expires_at: 24.hours.from_now)
         end
@@ -157,6 +161,7 @@ RSpec.describe SigninsController do
           MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             expires_at: 10.hours.ago)
         end
 
