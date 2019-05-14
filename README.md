@@ -1,9 +1,51 @@
 # fb-user-datastore
 [![Build Status](https://travis-ci.org/ministryofjustice/fb-user-datastore.svg?branch=master)](https://travis-ci.org/ministryofjustice/fb-user-datastore)
 
-User Data store API for services built &amp; deployed on Form Builder
+User Data store API for services built and deployed on Form Builder
 
-# Environment Variables
+## Setting up development environment
+
+Prerequisites:
+
+- ruby and bundler
+- nodejs and npm
+- PostgreSQL
+- Docker - to build images to deploy
+
+Clone repository
+```sh
+git clone git@github.com:ministryofjustice/fb-user-datastore.git && cd fb-user-datastore.git
+```
+
+Intall gems
+```sh
+bundle install
+```
+
+Setup database
+```sh
+bundle exec rake db:create db:migrate
+```
+
+### Running tests
+
+```sh
+bundle exec rspec
+```
+
+Or via Guard to run tests continuously
+```sh
+bundle exec guard
+```
+
+### Swagger docs
+
+```sh
+bundle exec rails s
+open http://localhost:3000/api-docs
+```
+
+## Environment Variables
 
 The following environment variables are either needed, or read if present:
 

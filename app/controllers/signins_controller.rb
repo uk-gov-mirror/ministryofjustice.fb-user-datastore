@@ -9,7 +9,7 @@ class SigninsController < ApplicationController
 
     if magic_link.save
       magic_link.send_magic_link_email
-      render json: {}
+      render json: {}, status: :created
     end
   end
 
@@ -28,7 +28,7 @@ class SigninsController < ApplicationController
 
     return render_save_and_return_missing_error unless save_return
 
-    return render json: { encrypted_details: save_return.encrypted_payload }
+    return render json: { encrypted_details: save_return.encrypted_payload }, status: :ok
   end
 
   private

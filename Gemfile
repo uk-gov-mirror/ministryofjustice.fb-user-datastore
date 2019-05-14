@@ -3,8 +3,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.1'
 
-gem 'bootsnap', '>= 1.1.0', require: false
-
 gem 'rails', '~> 5.2.2.1'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
@@ -16,11 +14,15 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '>= 3.5.0'
   gem 'dotenv-rails', require: 'dotenv/rails-now'
+  gem 'rswag-specs'
 end
 
 group :development do
   gem 'listen'
   gem 'guard-rspec', require: false
+  gem 'rswag-api'
+  gem 'rswag-ui'
+  gem 'guard-shell'
 end
 
 group :test do
