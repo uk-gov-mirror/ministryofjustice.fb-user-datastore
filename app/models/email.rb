@@ -2,7 +2,7 @@ class Email < ApplicationRecord
   validates :service_slug, :email, :encrypted_payload, :expires_at, presence: true
 
   def confirmation_link
-    "https://#{service_slug}#{ENV['FORM_URL_SUFFIX']}/savereturn/email/confirm/#{id}"
+    "#{validation_url}/return/setup/email/confirm/#{id}"
   end
 
   def send_confirmation_email

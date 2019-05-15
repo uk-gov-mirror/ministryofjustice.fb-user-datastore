@@ -11,7 +11,8 @@ RSpec.describe SigninsController do
     let(:json_hash) do
       {
         email: 'user@example.com',
-        encrypted_email: 'encrypted:user@example.com'
+        encrypted_email: 'encrypted:user@example.com',
+        validation_url: 'https://example.com'
       }
     end
 
@@ -53,11 +54,33 @@ RSpec.describe SigninsController do
       end
     end
 
+    context 'with template_context provided' do
+      let(:json_hash) do
+        {
+          email: 'user@example.com',
+          encrypted_email: 'encrypted:user@example.com',
+          validation_url: 'https://example.com',
+          template_context: {a: true, b: 1, c: 'foo'}
+        }
+      end
+
+      it 'pesists attributes correctly' do
+        do_post!
+
+        record = MagicLink.last
+
+        expect(record.template_context['a']).to eql(true)
+        expect(record.template_context['b']).to eql(1)
+        expect(record.template_context['c']).to eql('foo')
+      end
+    end
+
     describe 'if magic link for email already exists' do
       let!(:previous_magic_link) do
         MagicLink.create!(service_slug: 'service-slug',
                           email: 'user@example.com',
                           encrypted_email: 'encrypted:user@example.com',
+                          validation_url: 'https://example.com',
                           expires_at: 24.hours.from_now)
       end
 
@@ -84,6 +107,7 @@ RSpec.describe SigninsController do
       MagicLink.create!(service_slug: 'service-slug',
                         email: 'user@example.com',
                         encrypted_email: 'encrypted:user@example.com',
+                        validation_url: 'https://example.com',
                         expires_at: 24.hours.from_now)
     end
 
@@ -135,6 +159,7 @@ RSpec.describe SigninsController do
           MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             validity: 'used',
                             expires_at: 24.hours.from_now)
         end
@@ -157,6 +182,7 @@ RSpec.describe SigninsController do
           MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             expires_at: 10.hours.ago)
         end
 

@@ -1,6 +1,6 @@
 class MagicLink < ApplicationRecord
   def magic_link
-    "https://#{service_slug}#{ENV['FORM_URL_SUFFIX']}/return/magiclink/#{id}"
+    "#{validation_url}/return/magiclink/#{id}"
   end
 
   def send_magic_link_email

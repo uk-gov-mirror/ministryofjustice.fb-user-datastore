@@ -123,6 +123,7 @@ RSpec.describe SaveReturnsController, type: :controller do
                         email: 'user@example.com',
                         encrypted_email: 'encrypted:user@example.com',
                         encrypted_payload: 'encrypted:payload',
+                        validation_url: 'https://example.com',
                         expires_at: 2.hours.from_now)
         end
 
@@ -140,6 +141,7 @@ RSpec.describe SaveReturnsController, type: :controller do
           MagicLink.create!(service_slug: 'service-slug',
                             email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             expires_at: 2.hours.from_now)
         end
 

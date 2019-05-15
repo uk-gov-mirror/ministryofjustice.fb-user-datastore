@@ -6,6 +6,8 @@ class EmailsController < ApplicationController
                            encrypted_email: params[:encrypted_email],
                            service_slug: params[:service_slug],
                            encrypted_payload: params[:encrypted_details],
+                           validation_url: params[:validation_url],
+                           template_context: params[:template_context],
                            expires_at: expires_at,
                            validity: 'valid')
 
@@ -27,7 +29,7 @@ class EmailsController < ApplicationController
 
     email.mark_as_used
 
-    render json: { email_details: email.encrypted_payload }, status: :ok
+    render json: { encrypted_details: email.encrypted_payload }, status: :ok
   end
 
   private
