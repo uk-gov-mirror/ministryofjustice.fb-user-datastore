@@ -1,5 +1,6 @@
 class MobilesController < ApplicationController
   def create
+    supersede_existing_mobiles
     mobile_data = Mobile.new(service_slug: params[:service_slug],
                              mobile: params[:mobile],
                              encrypted_email: params[:encrypted_email],
@@ -7,8 +8,11 @@ class MobilesController < ApplicationController
                              expires_at: expires_at,
                              code: mobile_code)
 
-    mobile_data.save!
-    render json: {}, status: :created
+    if mobile_data.save
+      render json: {}, status: :created
+    else
+      unavailable_error
+    end
   end
 
   private
@@ -31,5 +35,21 @@ class MobilesController < ApplicationController
 
   def default_duration
     30.minutes
+  end
+
+  def mobile_record_params
+    {
+      service_slug: params[:service_slug],
+      mobile: params[:mobile]
+    }
+  end
+
+  def supersede_existing_mobiles
+    mobiles = Mobile.where(mobile_record_params)
+    mobiles.update_all(validity: 'superseded')
+  end
+
+  def unavailable_error
+    render json: { code: 503, name: 'unavailable' }, status: 503
   end
 end

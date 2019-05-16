@@ -47,5 +47,51 @@ RSpec.describe MobilesController, type: :controller do
         expect(record.validity).to eq('valid')
       end
     end
+
+    context 'when the mobile record already exists' do
+      let(:post_request) do
+        post :create, params: { service_slug: service_slug,
+                                mobile: '07777 111 222',
+                                encrypted_email: 'encryptedEmail',
+                                encrypted_details: 'encryptedDetails',
+                                duration: '30' }
+      end
+
+      it "marks old record as 'superseded'" do
+        mobile_record = Mobile.create!(service_slug: 'my-service',
+                                       mobile: '07777 111 222',
+                                       encrypted_email: 'encryptedEmail',
+                                       encrypted_payload: 'encryptedDetails',
+                                       expires_at: Time.now + 30.minutes,
+                                       code: '22234',
+                                       validity: 'valid')
+        post_request
+        expect(mobile_record.reload.validity).to eq('superseded')
+      end
+
+      it 'persists the new record' do
+        expect do
+          post_request
+        end.to change(Mobile, :count).by(1)
+      end
+
+      it 'returns an empty json object' do
+        post_request
+        expect(response.body).to eql('{}')
+      end
+
+      it 'sets record values correctly' do
+        post_request
+        record = Mobile.last
+
+        expect(record.mobile).to eq(request.parameters[:mobile])
+        expect(record.encrypted_email).to eq(request.parameters[:encrypted_email])
+        expect(record.service_slug).to eq('my-service')
+        expect(record.encrypted_payload).to eq(request.parameters[:encrypted_details])
+        expect(record.expires_at).to_not be_blank
+        expect(record.code).to_not be_blank
+        expect(record.validity).to eq('valid')
+      end
+    end
   end
 end
