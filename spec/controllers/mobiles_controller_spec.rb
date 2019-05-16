@@ -15,7 +15,7 @@ RSpec.describe MobilesController, type: :controller do
                                 mobile: '07777 111 222',
                                 encrypted_email: 'encryptedEmail',
                                 encrypted_details: 'encryptedDetails',
-                                duration: '20' }
+                                duration: '30' }
       end
 
       it 'persists the record' do

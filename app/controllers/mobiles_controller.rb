@@ -4,7 +4,7 @@ class MobilesController < ApplicationController
                              mobile: params[:mobile],
                              encrypted_email: params[:encrypted_email],
                              encrypted_payload: params[:encrypted_details],
-                             expires_at: Time.now + (params[:duration].to_i).hours,
+                             expires_at: expires_at,
                              code: mobile_code)
 
     mobile_data.save!
@@ -15,5 +15,21 @@ class MobilesController < ApplicationController
 
   def mobile_code
     Array.new(5) { rand(10) }.join
+  end
+
+  def expires_at
+    Time.now + duration
+  end
+
+  def duration
+    if params[:duration]
+      params[:duration].to_i.minutes
+    else
+      default_duration
+    end
+  end
+
+  def default_duration
+    30.minutes
   end
 end
