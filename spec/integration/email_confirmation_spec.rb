@@ -32,7 +32,8 @@ RSpec.describe 'email confirmation' do
           {
             email: 'user@example.com',
             encrypted_email: 'encrypted:user@example.com',
-            encrypted_details: 'encrypted:payload'
+            encrypted_details: 'encrypted:payload',
+            validation_url: 'https://example.com'
           }
         end
 
@@ -72,6 +73,7 @@ RSpec.describe 'email confirmation' do
                        encrypted_payload: 'foo',
                        service_slug: 'foo',
                        email: 'foo',
+                       validation_url: 'https://example.com',
                        expires_at: 1.hour.from_now,
                        encrypted_email: 'foo')
         end
@@ -107,6 +109,7 @@ RSpec.describe 'email confirmation' do
                        encrypted_payload: 'foo',
                        service_slug: 'foo',
                        email: 'foo',
+                       validation_url: 'https://example.com',
                        expires_at: 2.days.ago,
                        encrypted_email: 'foo')
         end
@@ -129,6 +132,7 @@ RSpec.describe 'email confirmation' do
                        encrypted_payload: 'foo',
                        service_slug: 'foo',
                        email: 'foo',
+                       validation_url: 'https://example.com',
                        expires_at: 2.days.from_now,
                        encrypted_email: 'foo',
                        validity: 'superseded')

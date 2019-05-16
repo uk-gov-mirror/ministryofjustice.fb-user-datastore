@@ -32,7 +32,8 @@ RSpec.describe 'signin' do
           {
             email: 'user@example.com',
             encrypted_email: 'encrypted:user@example.com',
-            encrypted_details: 'encrypted:payload'
+            encrypted_details: 'encrypted:payload',
+            validation_url: 'https://example.com'
           }
         end
 
@@ -76,6 +77,7 @@ RSpec.describe 'signin' do
                             email: 'foo',
                             expires_at: 2.hours.from_now,
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             validity: 'valid')
         end
 
@@ -110,6 +112,7 @@ RSpec.describe 'signin' do
                             email: 'foo',
                             expires_at: 2.hours.from_now,
                             encrypted_email: 'encrypted:user@example.com',
+                            validation_url: 'https://example.com',
                             validity: 'used')
         end
 
