@@ -20,9 +20,9 @@ ActiveRecord::Schema.define(version: 2019_05_23_125938) do
     t.string "service_slug"
     t.string "encrypted_payload"
     t.datetime "expires_at"
-    t.string "validity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "validity"
     t.text "encrypted_email", null: false
     t.index ["service_slug", "encrypted_email"], name: "index_emails_on_service_slug_and_encrypted_email"
   end
@@ -35,6 +35,18 @@ ActiveRecord::Schema.define(version: 2019_05_23_125938) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["service_slug", "encrypted_email"], name: "index_magic_links_on_service_slug_and_encrypted_email"
+  end
+
+  create_table "mobiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "service_slug"
+    t.string "mobile"
+    t.text "encrypted_email"
+    t.text "encrypted_payload"
+    t.datetime "expires_at"
+    t.string "validity", default: "valid", null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "save_returns", force: :cascade do |t|
