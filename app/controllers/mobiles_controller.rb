@@ -5,9 +5,15 @@ class MobilesController < ApplicationController
                              encrypted_email: params[:encrypted_email],
                              encrypted_payload: params[:encrypted_details],
                              expires_at: Time.now + (params[:duration].to_i).hours,
-                             code: '12345')
+                             code: mobile_code)
 
     mobile_data.save!
     render json: {}, status: :created
+  end
+
+  private
+
+  def mobile_code
+    Array.new(5) { rand(10) }.join
   end
 end
