@@ -4,6 +4,7 @@ RSpec.describe SaveReturnsController, type: :controller do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
+    stub_request(:post, 'http://localhost:3000/save_return/email_progress_saved').to_return(status: 201, body: '{}', headers: {})
   end
 
   describe 'POST #create' do
@@ -11,6 +12,12 @@ RSpec.describe SaveReturnsController, type: :controller do
       {
         encrypted_email: 'encrypted:foo@example.com',
         encrypted_details: 'encrypted:foo',
+        email: {
+          template_name: 'name-of-template',
+          to: 'foo@example.com',
+          subject: 'subject goes here',
+          body: 'form saved at https://example.com'
+        }
       }
     end
 

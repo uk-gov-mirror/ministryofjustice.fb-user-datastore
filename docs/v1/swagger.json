@@ -136,6 +136,23 @@
                 "encrypted_details": {
                   "type": "string",
                   "example": "encrypted:payload"
+                },
+                "email": {
+                  "type": "object",
+                  "properties": {
+                    "to": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    },
+                    "subject": {
+                      "type": "string",
+                      "example": "subject goes here"
+                    },
+                    "body": {
+                      "type": "string",
+                      "example": "body goes here"
+                    }
+                  }
                 }
               }
             }
@@ -143,10 +160,18 @@
         ],
         "responses": {
           "201": {
-            "description": "save and return record created"
+            "description": "save and return record created",
+            "examples": {
+              "application/json": {
+              }
+            }
           },
           "200": {
-            "description": "save and return record updated"
+            "description": "save and return record updated",
+            "examples": {
+              "application/json": {
+              }
+            }
           }
         }
       }
