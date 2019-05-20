@@ -54,12 +54,12 @@ RSpec.describe 'signin' do
       parameter name: :json, in: :body, required: true, schema: {
         type: :object,
         properties: {
-          magiclink: { type: :string, required: true, example: SecureRandom.uuid },
+          magiclink: { type: :string, required: true, example: "352ded7d-405b-44d5-b825-de8f39fd5869" },
         },
       }
 
       response '200', 'magiclink correct and processed' do
-        let(:uuid) { SecureRandom.uuid }
+        let(:uuid) { "352ded7d-405b-44d5-b825-de8f39fd5869" }
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {

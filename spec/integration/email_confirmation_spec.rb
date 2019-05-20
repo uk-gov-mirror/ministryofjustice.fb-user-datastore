@@ -54,12 +54,12 @@ RSpec.describe 'email confirmation' do
       parameter name: :json, in: :body, required: true, schema: {
         type: :object,
         properties: {
-          email_token: { type: :string, required: true, example: SecureRandom.uuid },
+          email_token: { type: :string, required: true, example: '49a69c4c-5f6c-4e36-98f1-c0a4b822128d' },
         },
       }
 
       response '200', 'magiclink correct and processed' do
-        let(:uuid) { SecureRandom.uuid }
+        let(:uuid) { '49a69c4c-5f6c-4e36-98f1-c0a4b822128d' }
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
