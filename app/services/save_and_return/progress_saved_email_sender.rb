@@ -24,6 +24,7 @@ module SaveAndReturn
 
     def payload
       {
+        service_slug: service_slug,
         email: email.to_payload
       }
     end
