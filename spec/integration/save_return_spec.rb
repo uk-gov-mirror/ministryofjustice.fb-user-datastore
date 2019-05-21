@@ -26,6 +26,7 @@ RSpec.describe 'save and return record' do
               to: { type: :string, example: 'user@example.com' },
               subject: { type: :string, example: 'subject goes here' },
               body: { type: :string, example: 'body goes here' },
+              template_name: { type: :string, example: 'name-of-template' }
             }
           }
         }
@@ -40,7 +41,8 @@ RSpec.describe 'save and return record' do
             email: {
               to: 'user@example.com',
               subject: 'subject goes here',
-              body: 'body goes here'
+              body: 'body goes here',
+              template_name: 'name-of-template'
             }
           }
         end

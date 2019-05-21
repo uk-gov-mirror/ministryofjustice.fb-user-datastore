@@ -151,6 +151,10 @@
                     "body": {
                       "type": "string",
                       "example": "body goes here"
+                    },
+                    "template_name": {
+                      "type": "string",
+                      "example": "name-of-template"
                     }
                   }
                 }
