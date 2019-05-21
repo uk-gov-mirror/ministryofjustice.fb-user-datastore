@@ -4,13 +4,18 @@ RSpec.describe SigninsController do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
-    stub_request(:post, "http://localhost:3000/save_return/email_magic_links").to_return(status: 201)
+    stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
   end
 
   describe 'GET /service/:service_slug/savereturn/signin/email/:email' do
     let(:json_hash) do
       {
-        email: 'user@example.com',
+        email: {
+          to: 'user@example.com',
+          subject: 'subject goes here',
+          body: 'body goes here',
+          template_name: 'name-of-template'
+        },
         encrypted_email: 'encrypted:user@example.com',
         validation_url: 'https://example.com'
       }
@@ -42,7 +47,7 @@ RSpec.describe SigninsController do
 
       it 'pings submitter to send magic link email' do
         mock_sender = double('sender')
-        expect(SaveAndReturn::MagicLinkEmailSender).to receive(:new).and_return(mock_sender)
+        expect(EmailSender).to receive(:new).and_return(mock_sender)
         expect(mock_sender).to receive(:call)
 
         do_post!
@@ -57,7 +62,12 @@ RSpec.describe SigninsController do
     context 'with template_context provided' do
       let(:json_hash) do
         {
-          email: 'user@example.com',
+          email: {
+            to: 'user@example.com',
+            subject: 'subject goes here',
+            body: 'body goes here',
+            template_name: 'name-of-template'
+          },
           encrypted_email: 'encrypted:user@example.com',
           validation_url: 'https://example.com',
           template_context: {a: true, b: 1, c: 'foo'}

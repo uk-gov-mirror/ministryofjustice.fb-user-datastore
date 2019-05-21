@@ -4,7 +4,7 @@ RSpec.describe SaveReturnsController, type: :controller do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
-    stub_request(:post, 'http://localhost:3000/save_return/email_progress_saved').to_return(status: 201, body: '{}', headers: {})
+    stub_request(:post, 'http://localhost:3000/email').to_return(status: 201, body: '{}', headers: {})
   end
 
   describe 'POST #create' do
@@ -95,7 +95,7 @@ RSpec.describe SaveReturnsController, type: :controller do
 
     context 'when api call to send email fails' do
       before :each do
-        stub_request(:post, 'http://localhost:3000/save_return/email_progress_saved').to_return(status: 400, body: '{}', headers: {})
+        stub_request(:post, 'http://localhost:3000/email').to_return(status: 400, body: '{}', headers: {})
       end
 
       it 'does not create save and return record' do

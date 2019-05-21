@@ -15,12 +15,17 @@ RSpec.describe EmailsController, type: :controller do
     end
 
     before do
-      stub_request(:post, "http://localhost:3000/save_return/email_confirmations").to_return(status: 201)
+      stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
     end
 
     let(:json_hash) do
       {
-        email: 'jane-doe@example.com',
+        email: {
+          to: 'jane-doe@example.com',
+          subject: 'subject goes here',
+          body: 'body goes here',
+          template_name: 'name-of-template'
+        },
         encrypted_email: 'encrypted:jane-doe@example.com',
         encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
         duration: 30,
@@ -32,7 +37,12 @@ RSpec.describe EmailsController, type: :controller do
       context 'when template_context is provided' do
         let(:json_hash) do
           {
-            email: 'jane-doe@example.com',
+            email: {
+              to: 'jane-doe@example.com',
+              subject: 'subject goes here',
+              body: 'body goes here',
+              template_name: 'name-of-template'
+            },
             encrypted_email: 'encrypted:jane-doe@example.com',
             encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
             duration: 30,
@@ -64,7 +74,7 @@ RSpec.describe EmailsController, type: :controller do
 
           record = Email.last
 
-          expect(record.email).to eq(json_hash[:email])
+          expect(record.email).to eq(json_hash[:email][:to])
           expect(record.encrypted_email).to eq(json_hash[:encrypted_email])
           expect(record.service_slug).to eq('my-service')
           expect(record.encrypted_payload).to eq(json_hash[:encrypted_details])
@@ -85,7 +95,7 @@ RSpec.describe EmailsController, type: :controller do
 
         it 'pings submitter to send email' do
           mock_sender = double('sender')
-          expect(SaveAndReturn::ConfirmationEmailSender).to receive(:new).and_return(mock_sender)
+          expect(EmailSender).to receive(:new).and_return(mock_sender)
           expect(mock_sender).to receive(:call)
 
           post_request

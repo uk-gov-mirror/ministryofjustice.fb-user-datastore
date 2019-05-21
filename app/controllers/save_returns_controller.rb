@@ -10,7 +10,7 @@ class SaveReturnsController < ApplicationController
         return render json: {}, status: :ok
       else
         if SaveReturn.create(save_return_hash)
-          SaveAndReturn::ProgressSavedEmailSender.new(email_data_object: email_data_object).call
+          EmailSender.new(email_data_object: email_data_object).call
 
           return render json: {}, status: :created
         else

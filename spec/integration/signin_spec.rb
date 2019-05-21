@@ -4,7 +4,7 @@ require 'securerandom'
 RSpec.describe 'signin' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
-    stub_request(:post, "http://localhost:3000/save_return/email_magic_links").to_return(status: 201)
+    stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
   end
 
   path '/service/{service_slug}/savereturn/signin/email' do
@@ -30,7 +30,12 @@ RSpec.describe 'signin' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: 'user@example.com',
+            email: {
+              to: 'user@example.com',
+              subject: 'subject goes here',
+              body: 'body goes here',
+              template_name: 'name-of-template'
+            },
             encrypted_email: 'encrypted:user@example.com',
             encrypted_details: 'encrypted:payload',
             validation_url: 'https://example.com'
