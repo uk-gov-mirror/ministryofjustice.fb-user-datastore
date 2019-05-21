@@ -33,11 +33,23 @@ RSpec.describe SaveAndReturn::ProgressSavedEmailSender do
       }
 
       stub = stub_request(:post, 'http://localhost:3000/save_return/email_progress_saved')
-              .with(headers: expected_headers, body: expected_body)
+                    .with(headers: expected_headers, body: expected_body)
+                    .to_return(status: 201)
 
       subject.call
 
       expect(stub).to have_been_requested
+    end
+
+    context 'when operation failed server side' do
+      before :each do
+        stub = stub_request(:post, 'http://localhost:3000/save_return/email_progress_saved')
+                          .to_return(status: 400)
+      end
+
+      it 'raises error' do
+        expect { subject.call }.to raise_error(SaveAndReturn::ProgressSavedEmailSender::OperationFailed)
+      end
     end
   end
 end

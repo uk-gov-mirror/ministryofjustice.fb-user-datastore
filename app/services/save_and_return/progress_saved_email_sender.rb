@@ -2,6 +2,8 @@ require 'net/http'
 
 module SaveAndReturn
   class ProgressSavedEmailSender
+    class OperationFailed < StandardError; end
+
     attr_reader :email
 
     def initialize(email_data_object:)
@@ -10,6 +12,8 @@ module SaveAndReturn
 
     def call
       response = http.request(request)
+
+      raise OperationFailed.new unless response.code.to_i == 201
     end
 
     private

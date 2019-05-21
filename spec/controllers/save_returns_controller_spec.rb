@@ -92,6 +92,19 @@ RSpec.describe SaveReturnsController, type: :controller do
         expect(response.body).to eql('{}')
       end
     end
+
+    context 'when api call to send email fails' do
+      before :each do
+        stub_request(:post, 'http://localhost:3000/save_return/email_progress_saved').to_return(status: 400, body: '{}', headers: {})
+      end
+
+      it 'does not create save and return record' do
+        expect do
+          post :create, params: { service_slug: 'service-slug' },
+                        body: json_hash.to_json
+        end.to_not change(SaveReturn, :count)
+      end
+    end
   end
 
   describe 'DELETE #delete' do

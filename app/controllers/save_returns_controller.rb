@@ -3,16 +3,19 @@ class SaveReturnsController < ApplicationController
     save_return = SaveReturn.find_by(service_slug: params[:service_slug],
                                      encrypted_email: params[:encrypted_email])
 
-    if save_return
-      save_return.update(save_return_hash)
+    ActiveRecord::Base.transaction do
+      if save_return
+        save_return.update(save_return_hash)
 
-      return render json: {}, status: :ok
-    else
-      if SaveReturn.create(save_return_hash)
-        SaveAndReturn::ProgressSavedEmailSender.new(email_data_object: email_data_object).call
-        return render json: {}, status: :created
+        return render json: {}, status: :ok
       else
-        return head :internal_server_error
+        if SaveReturn.create(save_return_hash)
+          SaveAndReturn::ProgressSavedEmailSender.new(email_data_object: email_data_object).call
+
+          return render json: {}, status: :created
+        else
+          return head :internal_server_error
+        end
       end
     end
   end
