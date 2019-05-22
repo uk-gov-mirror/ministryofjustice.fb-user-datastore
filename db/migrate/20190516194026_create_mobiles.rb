@@ -11,5 +11,7 @@ class CreateMobiles < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
+
+    add_index :mobiles, [:service_slug, :encrypted_email]
   end
 end
