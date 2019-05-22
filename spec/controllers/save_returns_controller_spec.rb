@@ -4,6 +4,7 @@ RSpec.describe SaveReturnsController, type: :controller do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
+    stub_request(:post, 'http://localhost:3000/email').to_return(status: 201, body: '{}', headers: {})
   end
 
   describe 'POST #create' do
@@ -11,6 +12,12 @@ RSpec.describe SaveReturnsController, type: :controller do
       {
         encrypted_email: 'encrypted:foo@example.com',
         encrypted_details: 'encrypted:foo',
+        email: {
+          template_name: 'name-of-template',
+          to: 'foo@example.com',
+          subject: 'subject goes here',
+          body: 'form saved at https://example.com'
+        }
       }
     end
 
@@ -83,6 +90,19 @@ RSpec.describe SaveReturnsController, type: :controller do
 
         expect(response.status).to eql(200)
         expect(response.body).to eql('{}')
+      end
+    end
+
+    context 'when api call to send email fails' do
+      before :each do
+        stub_request(:post, 'http://localhost:3000/email').to_return(status: 400, body: '{}', headers: {})
+      end
+
+      it 'does not create save and return record' do
+        expect do
+          post :create, params: { service_slug: 'service-slug' },
+                        body: json_hash.to_json
+        end.to_not change(SaveReturn, :count)
       end
     end
   end

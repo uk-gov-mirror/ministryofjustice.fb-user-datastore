@@ -4,7 +4,7 @@ require 'securerandom'
 RSpec.describe 'email confirmation' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
-    stub_request(:post, "http://localhost:3000/save_return/email_confirmations").to_return(status: 201)
+    stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
   end
 
   path '/service/{service_slug}/savereturn/email/add' do
@@ -30,7 +30,12 @@ RSpec.describe 'email confirmation' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: 'user@example.com',
+            email: {
+              to: 'user@example.com',
+              subject: 'subject goes here',
+              body: 'body goes here',
+              template_name: 'name-of-template'
+            },
             encrypted_email: 'encrypted:user@example.com',
             encrypted_details: 'encrypted:payload',
             validation_url: 'https://example.com'
@@ -54,12 +59,12 @@ RSpec.describe 'email confirmation' do
       parameter name: :json, in: :body, required: true, schema: {
         type: :object,
         properties: {
-          email_token: { type: :string, required: true, example: SecureRandom.uuid },
+          email_token: { type: :string, required: true, example: '49a69c4c-5f6c-4e36-98f1-c0a4b822128d' },
         },
       }
 
       response '200', 'magiclink correct and processed' do
-        let(:uuid) { SecureRandom.uuid }
+        let(:uuid) { '49a69c4c-5f6c-4e36-98f1-c0a4b822128d' }
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {

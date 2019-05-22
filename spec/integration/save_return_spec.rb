@@ -1,9 +1,9 @@
 require 'swagger_helper'
-require 'securerandom'
 
 RSpec.describe 'save and return record' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
+    stub_request(:post, 'http://localhost:3000/email').to_return(status: 201, body: '{}', headers: {})
   end
 
   path '/service/{service_slug}/savereturn/create' do
@@ -20,6 +20,15 @@ RSpec.describe 'save and return record' do
         properties: {
           encrypted_email: { type: :string, example: 'encrypted:user@example.com' },
           encrypted_details: { type: :string, example: 'encrypted:payload' },
+          email: {
+            type: :object,
+            properties: {
+              to: { type: :string, example: 'user@example.com' },
+              subject: { type: :string, example: 'subject goes here' },
+              body: { type: :string, example: 'body goes here' },
+              template_name: { type: :string, example: 'name-of-template' }
+            }
+          }
         }
       }
 
@@ -28,9 +37,17 @@ RSpec.describe 'save and return record' do
         let(:json) do
           {
             encrypted_email: 'encrypted:user@example.com',
-            encrypted_details: 'encrypted:payload'
+            encrypted_details: 'encrypted:payload',
+            email: {
+              to: 'user@example.com',
+              subject: 'subject goes here',
+              body: 'body goes here',
+              template_name: 'name-of-template'
+            }
           }
         end
+
+        examples 'application/json' => {}
 
         run_test!
       end
@@ -49,6 +66,8 @@ RSpec.describe 'save and return record' do
                              encrypted_email: json[:encrypted_email],
                              encrypted_payload: json[:encrypted_details])
         end
+
+        examples 'application/json' => {}
 
         run_test!
       end
