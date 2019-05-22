@@ -22,11 +22,15 @@ RSpec.describe MobilesController, type: :controller do
       }
     end
 
-    context 'when the mobile record does not exist' do
-      let(:post_request) do
-        post :create, params: { service_slug: service_slug }, body: json_hash.to_json
-      end
+    before do
+      stub_request(:post, "http://localhost:3000/sms").to_return(status: 201)
+    end
 
+    let(:post_request) do
+      post :create, params: { service_slug: service_slug }, body: json_hash.to_json
+    end
+
+    context 'when the mobile record does not exist' do
       it 'persists the record' do
         expect do
           post_request
@@ -54,6 +58,14 @@ RSpec.describe MobilesController, type: :controller do
         expect(record.expires_at).to_not be_blank
         expect(record.code).to_not be_blank
         expect(record.validity).to eq('valid')
+      end
+
+      it 'makes api call to send text message' do
+        mock_sender = double('sender')
+        expect(SmsSender).to receive(:new).and_return(mock_sender)
+        expect(mock_sender).to receive(:call)
+
+        post_request
       end
     end
 
@@ -110,6 +122,25 @@ RSpec.describe MobilesController, type: :controller do
         expect(record.expires_at).to_not be_blank
         expect(record.code).to_not be_blank
         expect(record.validity).to eq('valid')
+      end
+    end
+
+    context 'when send sms api call fails' do
+      before :each do
+        mock_sender = double('sender')
+        allow(SmsSender).to receive(:new).and_return(mock_sender)
+        allow(mock_sender).to receive(:call).and_raise(SmsSender::OperationFailed)
+      end
+
+      it 'does not save mobile record' do
+        expect do
+          post_request
+        end.to_not change(Mobile, :count)
+      end
+
+      it 'returns a 500' do
+        post_request
+        expect(response.status).to eql(500)
       end
     end
   end

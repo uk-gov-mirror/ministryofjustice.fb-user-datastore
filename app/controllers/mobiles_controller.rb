@@ -8,14 +8,25 @@ class MobilesController < ApplicationController
                              encrypted_payload: params[:encrypted_details],
                              expires_at: expires_at)
 
-    if mobile_data.save
-      render json: {}, status: :created
-    else
-      unavailable_error
+    ActiveRecord::Base.transaction do
+      if mobile_data.save
+        SmsSender.new(sms_data_object: sms_data_object, extra_personalisation: { code: mobile_data.code }).call
+        render json: {}, status: :created
+      else
+        unavailable_error
+      end
     end
   end
 
   private
+
+  def sms_data_object
+    DataObject::Sms.new(sms_params)
+  end
+
+  def sms_params
+    params.require(:sms).permit(:to, :body, :template_name)
+  end
 
   def expires_at
     Time.now + duration
