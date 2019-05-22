@@ -1,7 +1,7 @@
 require 'swagger_helper'
 require 'securerandom'
 
-RSpec.describe 'email confirmation' do
+RSpec.describe 'email' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
     stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
