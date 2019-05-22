@@ -106,6 +106,25 @@ RSpec.describe SigninsController do
         end.to change(MagicLink, :count).by(1)
       end
     end
+
+    context 'when email api call fails' do
+      before :each do
+        mock_sender = double('email_sender')
+        allow(EmailSender).to receive(:new).and_return(mock_sender)
+        allow(mock_sender).to receive(:call).and_raise(EmailSender::OperationFailed)
+      end
+
+      it 'does not persist magic link' do
+        expect do
+          do_post!
+        end.to_not change(MagicLink, :count)
+      end
+
+      it 'returns 500 error' do
+        do_post!
+        expect(response.status).to eql(500)
+      end
+    end
   end
 
   describe 'POST /service/:service_slug/savereturn/signin/magiclink' do

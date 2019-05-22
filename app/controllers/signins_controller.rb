@@ -9,9 +9,11 @@ class SigninsController < ApplicationController
                                template_context: params[:template_context],
                                expires_at: expires_at)
 
-    if magic_link.save
-      EmailSender.new(email_data_object: email_data_object, extra_personalisation: { token: magic_link.id }).call
-      render json: {}, status: :created
+    ActiveRecord::Base.transaction do
+      if magic_link.save
+        EmailSender.new(email_data_object: email_data_object, extra_personalisation: { token: magic_link.id }).call
+        render json: {}, status: :created
+      end
     end
   end
 
