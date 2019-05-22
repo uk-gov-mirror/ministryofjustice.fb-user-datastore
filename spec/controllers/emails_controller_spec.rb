@@ -169,6 +169,18 @@ RSpec.describe EmailsController, type: :controller do
           expect(hash['name']).to eql('unavailable')
         end
       end
+
+      context 'when api call fails' do
+        before do
+          stub_request(:post, "http://localhost:3000/email").to_return(status: 400)
+        end
+
+        it 'does not create record' do
+          expect do
+            post_request
+          end.to_not change(Email, :count)
+        end
+      end
     end
   end
 

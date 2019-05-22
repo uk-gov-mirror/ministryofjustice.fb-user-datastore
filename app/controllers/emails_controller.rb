@@ -11,12 +11,13 @@ class EmailsController < ApplicationController
                            expires_at: expires_at,
                            validity: 'valid')
 
-
-    if email_data.save
-      EmailSender.new(email_data_object: email_data_object, extra_personalisation: { token: email_data.id }).call
-      return render json: {}, status: :created
-    else
-      return unavailable_error
+    ActiveRecord::Base.transaction do
+      if email_data.save
+        EmailSender.new(email_data_object: email_data_object, extra_personalisation: { token: email_data.id }).call
+        return render json: {}, status: :created
+      else
+        return unavailable_error
+      end
     end
   end
 
