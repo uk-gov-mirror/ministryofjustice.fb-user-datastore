@@ -1,12 +1,12 @@
 class MobilesController < ApplicationController
   def create
     supersede_existing_mobiles
+
     mobile_data = Mobile.new(service_slug: params[:service_slug],
-                             mobile: params[:mobile],
+                             mobile: params[:sms][:to],
                              encrypted_email: params[:encrypted_email],
                              encrypted_payload: params[:encrypted_details],
-                             expires_at: expires_at,
-                             code: mobile_code)
+                             expires_at: expires_at)
 
     if mobile_data.save
       render json: {}, status: :created
@@ -16,10 +16,6 @@ class MobilesController < ApplicationController
   end
 
   private
-
-  def mobile_code
-    Array.new(5) { rand(10) }.join
-  end
 
   def expires_at
     Time.now + duration
@@ -40,7 +36,7 @@ class MobilesController < ApplicationController
   def mobile_record_params
     {
       service_slug: params[:service_slug],
-      mobile: params[:mobile]
+      mobile: params[:sms][:to]
     }
   end
 
