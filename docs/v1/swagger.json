@@ -107,6 +107,75 @@
         }
       }
     },
+    "/service/{service_slug}/savereturn/mobile/add": {
+      "post": {
+        "summary": "send confirmation sms to user",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sms": {
+                  "type": "object",
+                  "properties": {
+                    "to": {
+                      "type": "string",
+                      "example": "07123456789"
+                    },
+                    "body": {
+                      "type": "string",
+                      "example": "text message goes here"
+                    },
+                    "template_name": {
+                      "type": "string",
+                      "example": "sms.generic"
+                    }
+                  }
+                },
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                },
+                "encrypted_details": {
+                  "type": "string",
+                  "example": "encrypted:payload"
+                },
+                "duration": {
+                  "type": "integer",
+                  "required": false,
+                  "default": 30,
+                  "example": 60
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "mobile confirmation created",
+            "examples": {
+              "application/json": {
+              }
+            }
+          }
+        }
+      }
+    },
     "/service/{service_slug}/savereturn/create": {
       "post": {
         "summary": "create save and return record for user",
