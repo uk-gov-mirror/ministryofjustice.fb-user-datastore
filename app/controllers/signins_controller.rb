@@ -7,7 +7,7 @@ class SigninsController < ApplicationController
                                expires_at: expires_at)
 
     if magic_link.save
-      render json: {}, status: :created
+      render json: { token: magic_link.id }, status: :created
     end
   end
 

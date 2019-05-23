@@ -36,9 +36,11 @@ RSpec.describe SigninsController do
         expect(record.validity).to eql('valid')
       end
 
-      it 'responds with empty json object' do
+      it 'responds with magiclink' do
         do_post!
-        expect(response.body).to eql("{}")
+        record = MagicLink.last
+
+        expect(JSON.parse(response.body)).to eql({"token" => record.id})
       end
     end
 

@@ -35,6 +35,8 @@ RSpec.describe 'signin' do
           }
         end
 
+        examples 'application/json' => { token: 'this-is-a-guid' }
+
         run_test!
       end
     end
