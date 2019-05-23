@@ -49,7 +49,12 @@
         ],
         "responses": {
           "201": {
-            "description": "email confirmation created"
+            "description": "email confirmation created",
+            "examples": {
+              "application/json": {
+                "token": "this-is-a-guid"
+              }
+            }
           }
         }
       }

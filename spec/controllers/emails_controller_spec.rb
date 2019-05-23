@@ -67,6 +67,11 @@ RSpec.describe EmailsController, type: :controller do
         it 'returns a 201 status' do
           expect(response).to have_http_status(201)
         end
+
+        it 'returns token to client' do
+          new_record = Email.order(created_at: :asc).last
+          expect(JSON.parse(response.body)).to eql({"token" => new_record.id})
+        end
       end
 
       context 'when there is an error' do

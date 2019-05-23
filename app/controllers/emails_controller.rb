@@ -9,7 +9,7 @@ class EmailsController < ApplicationController
                            validity: 'valid')
 
     if email_data.save
-      return render json: {}, status: :created
+      return render json: { token: email_data.id }, status: :created
     else
       return unavailable_error
     end
