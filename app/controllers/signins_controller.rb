@@ -3,17 +3,11 @@ class SigninsController < ApplicationController
     supersede_existing_records
 
     magic_link = MagicLink.new(service_slug: params[:service_slug],
-                               email: params[:email][:to],
                                encrypted_email: params[:encrypted_email],
-                               validation_url: params[:validation_url],
-                               template_context: params[:template_context],
                                expires_at: expires_at)
 
-    ActiveRecord::Base.transaction do
-      if magic_link.save
-        EmailSender.new(email_data_object: email_data_object, extra_personalisation: { token: magic_link.id }).call
-        render json: {}, status: :created
-      end
+    if magic_link.save
+      render json: { token: magic_link.id }, status: :created
     end
   end
 
@@ -36,14 +30,6 @@ class SigninsController < ApplicationController
   end
 
   private
-
-  def email_params
-    params.require(:email).permit(:to, :subject, :body, :template_name)
-  end
-
-  def email_data_object
-    DataObject::Email.new(email_params)
-  end
 
   def expires_at
     Time.now + 24.hours

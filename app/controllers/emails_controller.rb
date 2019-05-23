@@ -2,22 +2,16 @@ class EmailsController < ApplicationController
   def create
     supersede_existing_records
 
-    email_data = Email.new(email: params[:email][:to],
-                           encrypted_email: params[:encrypted_email],
+    email_data = Email.new(encrypted_email: params[:encrypted_email],
                            service_slug: params[:service_slug],
                            encrypted_payload: params[:encrypted_details],
-                           validation_url: params[:validation_url],
-                           template_context: params[:template_context],
                            expires_at: expires_at,
                            validity: 'valid')
 
-    ActiveRecord::Base.transaction do
-      if email_data.save
-        EmailSender.new(email_data_object: email_data_object, extra_personalisation: { token: email_data.id }).call
-        return render json: {}, status: :created
-      else
-        return unavailable_error
-      end
+    if email_data.save
+      return render json: { token: email_data.id }, status: :created
+    else
+      return unavailable_error
     end
   end
 
@@ -87,13 +81,5 @@ class EmailsController < ApplicationController
   def unavailable_error
     render json: { code: 503,
                    name: 'unavailable' }, status: 503
-  end
-
-  def email_data_object
-    DataObject::Email.new(email_params)
-  end
-
-  def email_params
-    params.require(:email).permit(:to, :subject, :body, :template_name)
   end
 end

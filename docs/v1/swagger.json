@@ -29,10 +29,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "user@example.com"
-                },
                 "encrypted_email": {
                   "type": "string",
                   "example": "encrypted:user@example.com"
@@ -53,7 +49,12 @@
         ],
         "responses": {
           "201": {
-            "description": "email confirmation created"
+            "description": "email confirmation created",
+            "examples": {
+              "application/json": {
+                "token": "this-is-a-guid"
+              }
+            }
           }
         }
       }
@@ -266,7 +267,12 @@
         ],
         "responses": {
           "201": {
-            "description": "email confirmation created"
+            "description": "email confirmation created",
+            "examples": {
+              "application/json": {
+                "token": "this-is-a-guid"
+              }
+            }
           }
         }
       }

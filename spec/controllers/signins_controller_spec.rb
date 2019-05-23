@@ -4,20 +4,12 @@ RSpec.describe SigninsController do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
-    stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
   end
 
   describe 'GET /service/:service_slug/savereturn/signin/email/:email' do
     let(:json_hash) do
       {
-        email: {
-          to: 'user@example.com',
-          subject: 'subject goes here',
-          body: 'body goes here',
-          template_name: 'name-of-template'
-        },
         encrypted_email: 'encrypted:user@example.com',
-        validation_url: 'https://example.com'
       }
     end
 
@@ -39,58 +31,23 @@ RSpec.describe SigninsController do
         record = MagicLink.last
 
         expect(record.service_slug).to eql('service-slug')
-        expect(record.email).to eql('user@example.com')
         expect(record.encrypted_email).to eql('encrypted:user@example.com')
         expect(record.expires_at).to be_within(2.hours).of(24.hours.from_now)
         expect(record.validity).to eql('valid')
       end
 
-      it 'pings submitter to send magic link email' do
-        mock_sender = double('sender')
-        expect(EmailSender).to receive(:new).and_return(mock_sender)
-        expect(mock_sender).to receive(:call)
-
+      it 'responds with magiclink' do
         do_post!
-      end
-
-      it 'responds with empty json object' do
-        do_post!
-        expect(response.body).to eql("{}")
-      end
-    end
-
-    context 'with template_context provided' do
-      let(:json_hash) do
-        {
-          email: {
-            to: 'user@example.com',
-            subject: 'subject goes here',
-            body: 'body goes here',
-            template_name: 'name-of-template'
-          },
-          encrypted_email: 'encrypted:user@example.com',
-          validation_url: 'https://example.com',
-          template_context: {a: true, b: 1, c: 'foo'}
-        }
-      end
-
-      it 'pesists attributes correctly' do
-        do_post!
-
         record = MagicLink.last
 
-        expect(record.template_context['a']).to eql(true)
-        expect(record.template_context['b']).to eql(1)
-        expect(record.template_context['c']).to eql('foo')
+        expect(JSON.parse(response.body)).to eql({"token" => record.id})
       end
     end
 
     describe 'if magic link for email already exists' do
       let!(:previous_magic_link) do
         MagicLink.create!(service_slug: 'service-slug',
-                          email: 'user@example.com',
                           encrypted_email: 'encrypted:user@example.com',
-                          validation_url: 'https://example.com',
                           expires_at: 24.hours.from_now)
       end
 
@@ -106,25 +63,6 @@ RSpec.describe SigninsController do
         end.to change(MagicLink, :count).by(1)
       end
     end
-
-    context 'when email api call fails' do
-      before :each do
-        mock_sender = double('email_sender')
-        allow(EmailSender).to receive(:new).and_return(mock_sender)
-        allow(mock_sender).to receive(:call).and_raise(EmailSender::OperationFailed)
-      end
-
-      it 'does not persist magic link' do
-        expect do
-          do_post!
-        end.to_not change(MagicLink, :count)
-      end
-
-      it 'returns 500 error' do
-        do_post!
-        expect(response.status).to eql(500)
-      end
-    end
   end
 
   describe 'POST /service/:service_slug/savereturn/signin/magiclink' do
@@ -134,9 +72,7 @@ RSpec.describe SigninsController do
 
     let(:magic_link) do
       MagicLink.create!(service_slug: 'service-slug',
-                        email: 'user@example.com',
                         encrypted_email: 'encrypted:user@example.com',
-                        validation_url: 'https://example.com',
                         expires_at: 24.hours.from_now)
     end
 
@@ -186,9 +122,7 @@ RSpec.describe SigninsController do
       context 'when magic link is used' do
         let(:magic_link) do
           MagicLink.create!(service_slug: 'service-slug',
-                            email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
-                            validation_url: 'https://example.com',
                             validity: 'used',
                             expires_at: 24.hours.from_now)
         end
@@ -209,9 +143,7 @@ RSpec.describe SigninsController do
       context 'when magic link has expired' do
         let(:magic_link) do
           MagicLink.create!(service_slug: 'service-slug',
-                            email: 'user@example.com',
                             encrypted_email: 'encrypted:user@example.com',
-                            validation_url: 'https://example.com',
                             expires_at: 10.hours.ago)
         end
 

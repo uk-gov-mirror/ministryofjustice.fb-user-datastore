@@ -1,10 +1,9 @@
 require 'swagger_helper'
 require 'securerandom'
 
-RSpec.describe 'email confirmation' do
+RSpec.describe 'email' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
-    stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
   end
 
   path '/service/{service_slug}/savereturn/email/add' do
@@ -19,7 +18,6 @@ RSpec.describe 'email confirmation' do
       parameter name: :json, in: :body, required: true, schema: {
         type: :object,
         properties: {
-          email: { type: :string, example: 'user@example.com' },
           encrypted_email: { type: :string, example: 'encrypted:user@example.com' },
           encrypted_details: { type: :string, example: 'encrypted:payload' },
           duration: { type: :integer, required: false, default: 120, example: 120 },
@@ -30,17 +28,14 @@ RSpec.describe 'email confirmation' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: {
-              to: 'user@example.com',
-              subject: 'subject goes here',
-              body: 'body goes here',
-              template_name: 'name-of-template'
-            },
             encrypted_email: 'encrypted:user@example.com',
             encrypted_details: 'encrypted:payload',
-            validation_url: 'https://example.com'
           }
         end
+
+        examples "application/json" => {
+          token: 'this-is-a-guid'
+        }
 
         run_test!
       end
@@ -68,7 +63,6 @@ RSpec.describe 'email confirmation' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: 'user@example.com',
             email_token: uuid
           }
         end
@@ -77,8 +71,6 @@ RSpec.describe 'email confirmation' do
           Email.create(id: uuid,
                        encrypted_payload: 'foo',
                        service_slug: 'foo',
-                       email: 'foo',
-                       validation_url: 'https://example.com',
                        expires_at: 1.hour.from_now,
                        encrypted_email: 'foo')
         end
@@ -90,7 +82,6 @@ RSpec.describe 'email confirmation' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: 'user@example.com',
             encrypted_email: 'encrypted:user@example.com',
             encrypted_details: 'encrypted:payload'
           }
@@ -104,7 +95,6 @@ RSpec.describe 'email confirmation' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: 'user@example.com',
             email_token: uuid
           }
         end
@@ -113,8 +103,6 @@ RSpec.describe 'email confirmation' do
           Email.create(id: uuid,
                        encrypted_payload: 'foo',
                        service_slug: 'foo',
-                       email: 'foo',
-                       validation_url: 'https://example.com',
                        expires_at: 2.days.ago,
                        encrypted_email: 'foo')
         end
@@ -127,7 +115,6 @@ RSpec.describe 'email confirmation' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: 'user@example.com',
             email_token: uuid
           }
         end
@@ -136,8 +123,6 @@ RSpec.describe 'email confirmation' do
           Email.create(id: uuid,
                        encrypted_payload: 'foo',
                        service_slug: 'foo',
-                       email: 'foo',
-                       validation_url: 'https://example.com',
                        expires_at: 2.days.from_now,
                        encrypted_email: 'foo',
                        validity: 'superseded')
