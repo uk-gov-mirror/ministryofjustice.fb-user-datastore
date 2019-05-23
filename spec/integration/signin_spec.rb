@@ -30,15 +30,8 @@ RSpec.describe 'signin' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
-            email: {
-              to: 'user@example.com',
-              subject: 'subject goes here',
-              body: 'body goes here',
-              template_name: 'name-of-template'
-            },
             encrypted_email: 'encrypted:user@example.com',
             encrypted_details: 'encrypted:payload',
-            validation_url: 'https://example.com'
           }
         end
 
@@ -79,10 +72,8 @@ RSpec.describe 'signin' do
 
           MagicLink.create!(id: uuid,
                             service_slug: service_slug,
-                            email: 'foo',
                             expires_at: 2.hours.from_now,
                             encrypted_email: 'encrypted:user@example.com',
-                            validation_url: 'https://example.com',
                             validity: 'valid')
         end
 
@@ -114,10 +105,8 @@ RSpec.describe 'signin' do
         before :each do
           MagicLink.create!(id: uuid,
                             service_slug: service_slug,
-                            email: 'foo',
                             expires_at: 2.hours.from_now,
                             encrypted_email: 'encrypted:user@example.com',
-                            validation_url: 'https://example.com',
                             validity: 'used')
         end
 

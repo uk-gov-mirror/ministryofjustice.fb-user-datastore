@@ -14,113 +14,30 @@ RSpec.describe EmailsController, type: :controller do
                     body: json_hash.to_json
     end
 
-    before do
-      stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
-    end
-
     let(:json_hash) do
       {
-        email: {
-          to: 'jane-doe@example.com',
-          subject: 'subject goes here',
-          body: 'body goes here',
-          template_name: 'name-of-template'
-        },
         encrypted_email: 'encrypted:jane-doe@example.com',
         encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
-        duration: 30,
-        validation_url: 'https://example.com',
+        duration: 30
       }
     end
 
     context 'with a valid JSON body' do
-      context 'when template_context is provided' do
-        let(:json_hash) do
-          {
-            email: {
-              to: 'jane-doe@example.com',
-              subject: 'subject goes here',
-              body: 'body goes here',
-              template_name: 'name-of-template'
-            },
-            encrypted_email: 'encrypted:jane-doe@example.com',
-            encrypted_details: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
-            duration: 30,
-            validation_url: 'https://example.com',
-            template_context: {"a":true,"b":1,"c":"foo"}
-          }
-        end
-
-        it 'sets record values correctly' do
-          post_request
-
-          record = Email.last
-
-          expect(record.template_context['a']).to eq(true)
-          expect(record.template_context['b']).to eq(1)
-          expect(record.template_context['c']).to eq('foo')
-        end
-      end
-
-      context 'when the email record does not exist' do
-        it 'persists the record' do
-          expect do
-            post_request
-          end.to change(Email, :count).by(1)
-        end
-
-        it 'sets record values correctly' do
-          post_request
-
-          record = Email.last
-
-          expect(record.email).to eq(json_hash[:email][:to])
-          expect(record.encrypted_email).to eq(json_hash[:encrypted_email])
-          expect(record.service_slug).to eq('my-service')
-          expect(record.encrypted_payload).to eq(json_hash[:encrypted_details])
-          expect(record.expires_at).to_not be_blank
-          expect(record.validity).to eq('valid')
-          expect(record.validation_url).to eq('https://example.com')
-        end
-
-        it 'returns a 201 status' do
-          post_request
-          expect(response).to have_http_status(201)
-        end
-
-        it 'retuns empty json object' do
-          post_request
-          expect(response.body).to eql('{}')
-        end
-
-        it 'pings submitter to send email' do
-          mock_sender = double('sender')
-          expect(EmailSender).to receive(:new).and_return(mock_sender)
-          expect(mock_sender).to receive(:call)
-
-          post_request
-        end
-      end
-
       context 'when the email records already exist' do
         let(:existing_record1) do
           Email.create!(id: '5db4f4e3-71ef-4784-a03a-2f2a490174f2',
-                        email: 'jane-doe@example.com',
                         encrypted_email: 'encrypted:jane-doe@example.com',
                         service_slug: service_slug,
                         encrypted_payload: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
-                        validation_url: 'https://example.com',
                         expires_at: Time.now + 20.minutes,
                         validity: 'valid')
         end
 
         let(:existing_record2) do
           Email.create!(id: '5db4f4e3-71ef-4784-a03a-2f2a490174f3',
-                        email: 'jane-doe@example.com',
                         encrypted_email: 'encrypted:jane-doe@example.com',
                         service_slug: service_slug,
                         encrypted_payload: '64c0b8afa7e93d51c1fc5fe82cac4a690927ee1aa5883b985',
-                        validation_url: 'https://example.com',
                         expires_at: Time.now + 20.minutes,
                         validity: 'valid')
         end
@@ -132,7 +49,7 @@ RSpec.describe EmailsController, type: :controller do
         end
 
         it 'there are multiple records with the same email address' do
-          expect(Email.where(email: 'jane-doe@example.com').count).to eq(3)
+          expect(Email.where(encrypted_email: 'encrypted:jane-doe@example.com').count).to eq(3)
         end
 
         it 'sets validity of existing record to `superseded`' do
@@ -169,29 +86,15 @@ RSpec.describe EmailsController, type: :controller do
           expect(hash['name']).to eql('unavailable')
         end
       end
-
-      context 'when api call fails' do
-        before do
-          stub_request(:post, "http://localhost:3000/email").to_return(status: 400)
-        end
-
-        it 'does not create record' do
-          expect do
-            post_request
-          end.to_not change(Email, :count)
-        end
-      end
     end
   end
 
   describe 'POST #confirm' do
     context 'happy path' do
       let(:email) do
-        Email.create!(email: 'user@example.com',
-                      encrypted_email: 'encrypted:user@example.com',
+        Email.create!(encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
-                      validation_url: 'https://example.com',
                       expires_at: 28.days.from_now,
                       validity: 'valid')
       end
@@ -225,11 +128,9 @@ RSpec.describe EmailsController, type: :controller do
 
     context 'when link has expired' do
       let(:email) do
-        Email.create!(email: 'user@example.com',
-                      encrypted_email: 'encrypted:user@example.com',
+        Email.create!(encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
-                      validation_url: 'https://example.com',
                       expires_at: 10.days.ago,
                       validity: 'valid')
       end
@@ -244,11 +145,9 @@ RSpec.describe EmailsController, type: :controller do
 
     context 'when link has already been used' do
       let(:email) do
-        Email.create!(email: 'user@example.com',
-                      encrypted_email: 'encrypted:user@example.com',
+        Email.create!(encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
-                      validation_url: 'https://example.com',
                       expires_at: 10.days.from_now,
                       validity: 'used')
       end
@@ -263,11 +162,9 @@ RSpec.describe EmailsController, type: :controller do
 
     context 'when link has been superseded' do
       let(:email) do
-        Email.create!(email: 'user@example.com',
-                      encrypted_email: 'encrypted:user@example.com',
+        Email.create!(encrypted_email: 'encrypted:user@example.com',
                       service_slug: 'service-slug',
                       encrypted_payload: 'foo',
-                      validation_url: 'https://example.com',
                       expires_at: 10.days.from_now,
                       validity: 'superseded')
       end

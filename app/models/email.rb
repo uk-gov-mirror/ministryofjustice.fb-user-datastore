@@ -1,5 +1,5 @@
 class Email < ApplicationRecord
-  validates :service_slug, :email, :encrypted_payload, :expires_at, presence: true
+  validates :service_slug, :encrypted_payload, :expires_at, presence: true
 
   def expired?
     expires_at < Time.now
