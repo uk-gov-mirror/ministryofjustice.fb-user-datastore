@@ -4,7 +4,6 @@ require 'securerandom'
 RSpec.describe 'signin' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
-    stub_request(:post, "http://localhost:3000/email").to_return(status: 201)
   end
 
   path '/service/{service_slug}/savereturn/signin/email' do
