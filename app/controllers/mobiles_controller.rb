@@ -14,6 +14,21 @@ class MobilesController < ApplicationController
     end
   end
 
+  def confirm
+    mobile = Mobile.where('expires_at > ?', Time.now)
+                   .where(validity: 'valid')
+                   .find_by(service_slug: params[:service_slug],
+                            encrypted_email: params[:encrypted_email],
+                            code: params[:code])
+
+    if mobile
+      mobile.mark_as_used
+      render json: { encrypted_details: mobile.encrypted_payload }, status: :ok
+    else
+      render json: {}, status: :unauthorized
+    end
+  end
+
   private
 
   def expires_at

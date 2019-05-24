@@ -104,4 +104,76 @@ RSpec.describe MobilesController, type: :controller do
       end
     end
   end
+
+  describe 'POST /service/:service_slug/savereturn/mobile/confirm' do
+    let(:service_slug) { 'my-form' }
+    let(:json_hash) do
+      {
+        encrypted_email: 'encrypted:user@example.com',
+        code: '12345'
+      }
+    end
+
+    let(:post_request) do
+      post :confirm, params: { service_slug: service_slug },
+                     body: json_hash.to_json
+    end
+
+    context 'code is correct' do
+      let!(:record) do
+        Mobile.create!(service_slug: service_slug,
+                       encrypted_email: 'encrypted:user@example.com',
+                       encrypted_payload: 'encrypted:payload',
+                       expires_at: 2.days.from_now,
+                       code: '12345',
+                       validity: 'valid')
+      end
+
+      it 'returns 200' do
+        post_request
+        expect(response).to be_ok
+      end
+
+      it 'marks code as used' do
+        expect do
+          post_request
+        end.to change { record.reload.validity }.from('valid').to('used')
+      end
+
+      it 'returns encrypted_details' do
+        post_request
+        expect(JSON.parse(response.body)).to eql({ "encrypted_details" => record.encrypted_payload })
+      end
+    end
+
+    context 'when code is wrong' do
+      let!(:record) do
+        Mobile.create!(service_slug: service_slug,
+                       encrypted_email: 'encrypted:user@example.com',
+                       encrypted_payload: 'encrypted:payload',
+                       expires_at: 2.days.from_now,
+                       code: '12345',
+                       validity: 'valid')
+      end
+
+      let(:json_hash) do
+        {
+          encrypted_email: 'encrypted:user@example.com',
+          code: '00000'
+        }
+      end
+
+      it 'returns 401' do
+        post_request
+        expect(response.status).to eql(401)
+      end
+    end
+
+    context 'when no code exists' do
+      it 'returns 401' do
+        post_request
+        expect(response.status).to eql(401)
+      end
+    end
+  end
 end

@@ -4,7 +4,6 @@ require 'securerandom'
 RSpec.describe 'mobile' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
-    stub_request(:post, "http://localhost:3000/sms").to_return(status: 201)
   end
 
   path '/service/{service_slug}/savereturn/mobile/add' do
@@ -48,6 +47,61 @@ RSpec.describe 'mobile' do
         end
 
         examples 'application/json' => { code: '12345' }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/service/{service_slug}/savereturn/mobile/confirm' do
+    post 'confirm sms code' do
+      consumes 'application/json'
+
+      parameter name: :service_slug, in: :path, schema: {
+        type: :string,
+        required: true
+      }
+
+      parameter name: :json, in: :body, required: true, schema: {
+        type: :object,
+        properties: {
+          encrypted_email: { type: :string, example: 'encrypted:user@example.com' },
+          code: { type: :string, required: true, example: '12345' },
+        }
+      }
+
+      response '200', 'mobile code correct' do
+        let(:service_slug) { 'service-slug' }
+        let(:json) do
+          {
+            encrypted_email: 'encrypted:user@example.com',
+            code: '12345'
+          }
+        end
+        let!(:record) do
+          Mobile.create!(service_slug: service_slug,
+                         encrypted_email: 'encrypted:user@example.com',
+                         encrypted_payload: 'encrypted:payload',
+                         expires_at: 2.days.from_now,
+                         code: '12345',
+                         validity: 'valid')
+        end
+
+        examples 'application/json' => { encrypted_details: 'encrypted:payload' }
+
+        run_test!
+      end
+
+      response '401', 'mobile code incorrect' do
+        let(:service_slug) { 'service-slug' }
+        let(:json) do
+          {
+            encrypted_email: 'encrypted:user@example.com',
+            code: '12345'
+          }
+        end
+
+        examples 'application/json' => {}
 
         run_test!
       end

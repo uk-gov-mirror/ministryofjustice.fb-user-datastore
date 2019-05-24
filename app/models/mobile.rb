@@ -4,6 +4,10 @@ class Mobile < ApplicationRecord
 
   after_initialize :generate_code
 
+  def mark_as_used
+    update_attribute(:validity, 'used')
+  end
+
   private
 
   def generate_code
