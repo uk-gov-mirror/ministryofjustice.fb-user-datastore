@@ -1,5 +1,5 @@
-class SigninsController < ApplicationController
-  def email
+class EmailSigninsController < ApplicationController
+  def add
     supersede_existing_records
 
     magic_link = MagicLink.new(service_slug: params[:service_slug],
@@ -11,7 +11,7 @@ class SigninsController < ApplicationController
     end
   end
 
-  def magic_link
+  def validate
     magic_link = MagicLink.find_by(service_slug: params[:service_slug],
                                    id: params[:magiclink])
 

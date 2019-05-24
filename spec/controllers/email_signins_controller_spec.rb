@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe SigninsController do
+RSpec.describe EmailSigninsController do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:verify_token!)
     request.env['CONTENT_TYPE'] = 'application/json'
   end
 
-  describe 'GET /service/:service_slug/savereturn/signin/email/:email' do
+  describe 'POST #add' do
     let(:json_hash) do
       {
         encrypted_email: 'encrypted:user@example.com',
@@ -14,7 +14,7 @@ RSpec.describe SigninsController do
     end
 
     let(:do_post!) do
-      post :email, params: { service_slug: 'service-slug' },
+      post :add, params: { service_slug: 'service-slug' },
                    body: json_hash.to_json
     end
 
@@ -90,7 +90,7 @@ RSpec.describe SigninsController do
       end
 
       it 'returns encrypted payload from save and return record' do
-        post :magic_link, params: { service_slug: 'service-slug' },
+        post :validate, params: { service_slug: 'service-slug' },
                           body: json_hash.to_json
 
         expect(JSON.parse(response.body)).to eql({ 'encrypted_details' => 'encrypted:payload' })
@@ -98,7 +98,7 @@ RSpec.describe SigninsController do
 
       it 'marks magic link as used' do
         expect do
-          post :magic_link, params: { service_slug: 'service-slug' },
+          post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
         end.to change { magic_link.reload.validity }.from('valid').to('used')
       end
@@ -111,7 +111,7 @@ RSpec.describe SigninsController do
         end
 
         it 'returns 404 with error' do
-          post :magic_link, params: { service_slug: 'service-slug' },
+          post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
           expect(response.status).to eql(404)
@@ -132,7 +132,7 @@ RSpec.describe SigninsController do
         end
 
         it 'returns 400 with error' do
-          post :magic_link, params: { service_slug: 'service-slug' },
+          post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
           expect(response.status).to eql(400)
@@ -152,7 +152,7 @@ RSpec.describe SigninsController do
         end
 
         it 'returns 400 with error' do
-          post :magic_link, params: { service_slug: 'service-slug' },
+          post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
           expect(response.status).to eql(400)
@@ -166,7 +166,7 @@ RSpec.describe SigninsController do
         end
 
         it 'returns 500 with error' do
-          post :magic_link, params: { service_slug: 'service-slug' },
+          post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
           expect(response.status).to eql(500)

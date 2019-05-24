@@ -1,5 +1,5 @@
 class EmailsController < ApplicationController
-  def create
+  def add
     supersede_existing_records
 
     email_data = Email.new(encrypted_email: params[:encrypted_email],
@@ -15,7 +15,7 @@ class EmailsController < ApplicationController
     end
   end
 
-  def confirm
+  def validate
     email = Email.find_by_id(params[:email_token])
 
     return render_link_invalid unless email

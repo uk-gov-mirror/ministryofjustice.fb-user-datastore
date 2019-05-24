@@ -1,12 +1,12 @@
 require 'swagger_helper'
 require 'securerandom'
 
-RSpec.describe 'signin' do
+RSpec.describe 'email signin' do
   before :each do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
   end
 
-  path '/service/{service_slug}/savereturn/signin/email' do
+  path '/service/{service_slug}/savereturn/signin/email/add' do
     post 'send signin email to user' do
       consumes 'application/json'
 
@@ -41,7 +41,7 @@ RSpec.describe 'signin' do
     end
   end
 
-  path '/service/{service_slug}/savereturn/signin/magiclink' do
+  path '/service/{service_slug}/savereturn/signin/email/validate' do
     post 'confirm magiclink' do
       consumes 'application/json'
 

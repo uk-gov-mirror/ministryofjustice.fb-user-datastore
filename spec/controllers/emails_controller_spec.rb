@@ -10,7 +10,7 @@ RSpec.describe EmailsController, type: :controller do
 
   describe 'POST /service/:service/savereturn/email/add' do
     let(:post_request) do
-      post :create, params: { service_slug: service_slug },
+      post :add, params: { service_slug: service_slug },
                     body: json_hash.to_json
     end
 
@@ -109,7 +109,7 @@ RSpec.describe EmailsController, type: :controller do
       end
 
       it 'returns email_details' do
-        post :confirm, params: { service_slug: 'service-slug', email_token: email.id }
+        post :validate, params: { service_slug: 'service-slug', email_token: email.id }
 
         expect(response).to be_successful
         expect(JSON.parse(response.body)).to eql({ 'encrypted_details' => 'foo' })
@@ -117,14 +117,14 @@ RSpec.describe EmailsController, type: :controller do
 
       it 'marks record as used' do
         expect do
-          post :confirm, params: { service_slug: 'service-slug', email_token: email.id }
+          post :validate, params: { service_slug: 'service-slug', email_token: email.id }
         end.to change { email.reload.validity }.from('valid').to('used')
       end
     end
 
     context 'when email token cannot be found' do
       it 'returns link invalid' do
-        post :confirm, params: { service_slug: 'service-slug', email_token: 'idontexist' }
+        post :validate, params: { service_slug: 'service-slug', email_token: 'idontexist' }
 
         expect(response.status).to eql(404)
         expect(JSON.parse(response.body)).to eql({ 'code' => 404, 'name' => 'invalid.link' })
@@ -141,7 +141,7 @@ RSpec.describe EmailsController, type: :controller do
       end
 
       it 'returns expired' do
-        post :confirm, params: { service_slug: email.service_slug, email_token: email.id }
+        post :validate, params: { service_slug: email.service_slug, email_token: email.id }
 
         expect(response.status).to eql(410)
         expect(JSON.parse(response.body)).to eql({ 'code' => 410, 'name' => 'expired.link' })
@@ -158,7 +158,7 @@ RSpec.describe EmailsController, type: :controller do
       end
 
       it 'returns used' do
-        post :confirm, params: { service_slug: email.service_slug, email_token: email.id }
+        post :validate, params: { service_slug: email.service_slug, email_token: email.id }
 
         expect(response.status).to eql(410)
         expect(JSON.parse(response.body)).to eql({ 'code' => 410, 'name' => 'used.link' })
@@ -175,7 +175,7 @@ RSpec.describe EmailsController, type: :controller do
       end
 
       it 'returns superseded error' do
-        post :confirm, params: { service_slug: email.service_slug, email_token: email.id }
+        post :validate, params: { service_slug: email.service_slug, email_token: email.id }
 
         expect(response.status).to eql(400)
         expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'superseded.link' })

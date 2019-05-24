@@ -6,7 +6,7 @@ RSpec.describe 'mobile' do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
   end
 
-  path '/service/{service_slug}/savereturn/mobile/add' do
+  path '/service/{service_slug}/savereturn/setup/mobile/add' do
     post 'send confirmation sms to user' do
       consumes 'application/json'
 
@@ -53,7 +53,7 @@ RSpec.describe 'mobile' do
     end
   end
 
-  path '/service/{service_slug}/savereturn/mobile/confirm' do
+  path '/service/{service_slug}/savereturn/setup/mobile/validate' do
     post 'confirm sms code' do
       consumes 'application/json'
 

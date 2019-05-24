@@ -6,7 +6,7 @@ RSpec.describe 'email' do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
   end
 
-  path '/service/{service_slug}/savereturn/email/add' do
+  path '/service/{service_slug}/savereturn/setup/email/add' do
     post 'send confirmation email to user' do
       consumes 'application/json'
 
@@ -42,7 +42,7 @@ RSpec.describe 'email' do
     end
   end
 
-  path '/service/{service_slug}/savereturn/email/confirm' do
+  path '/service/{service_slug}/savereturn/setup/email/validate' do
     post 'confirm email from magiclink' do
       consumes 'application/json'
 

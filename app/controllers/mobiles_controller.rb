@@ -1,5 +1,5 @@
 class MobilesController < ApplicationController
-  def create
+  def add
     supersede_existing_mobiles
 
     mobile_data = Mobile.new(service_slug: params[:service_slug],
@@ -14,7 +14,7 @@ class MobilesController < ApplicationController
     end
   end
 
-  def confirm
+  def validate
     mobile = Mobile.where('expires_at > ?', Time.now)
                    .where(validity: 'valid')
                    .find_by(service_slug: params[:service_slug],

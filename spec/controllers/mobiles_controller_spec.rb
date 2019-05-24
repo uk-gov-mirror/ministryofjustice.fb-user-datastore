@@ -18,7 +18,7 @@ RSpec.describe MobilesController, type: :controller do
     end
 
     let(:post_request) do
-      post :create, params: { service_slug: service_slug }, body: json_hash.to_json
+      post :add, params: { service_slug: service_slug }, body: json_hash.to_json
     end
 
     context 'when the mobile record does not exist' do
@@ -64,7 +64,7 @@ RSpec.describe MobilesController, type: :controller do
       end
 
       let(:post_request) do
-        post :create, params: { service_slug: service_slug },
+        post :add, params: { service_slug: service_slug },
                       body: json_hash.to_json
       end
 
@@ -115,7 +115,7 @@ RSpec.describe MobilesController, type: :controller do
     end
 
     let(:post_request) do
-      post :confirm, params: { service_slug: service_slug },
+      post :validate, params: { service_slug: service_slug },
                      body: json_hash.to_json
     end
 
