@@ -177,6 +177,61 @@
         }
       }
     },
+    "/service/{service_slug}/savereturn/mobile/confirm": {
+      "post": {
+        "summary": "confirm sms code",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                },
+                "code": {
+                  "type": "string",
+                  "required": true,
+                  "example": "12345"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "mobile code correct",
+            "examples": {
+              "application/json": {
+                "encrypted_details": "encrypted:payload"
+              }
+            }
+          },
+          "401": {
+            "description": "mobile code incorrect",
+            "examples": {
+              "application/json": {
+              }
+            }
+          }
+        }
+      }
+    },
     "/service/{service_slug}/savereturn/create": {
       "post": {
         "summary": "create save and return record for user",
