@@ -47,7 +47,7 @@ RSpec.describe 'mobile' do
           }
         end
 
-        examples 'application/json' => {}
+        examples 'application/json' => { code: '12345' }
 
         run_test!
       end

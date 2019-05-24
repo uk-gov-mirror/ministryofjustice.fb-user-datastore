@@ -170,6 +170,7 @@
             "description": "mobile confirmation created",
             "examples": {
               "application/json": {
+                "code": "12345"
               }
             }
           }
