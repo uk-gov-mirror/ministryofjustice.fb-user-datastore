@@ -8,7 +8,7 @@ class MobilesController < ApplicationController
                              expires_at: expires_at)
 
     if mobile_data.save
-      render json: {}, status: :created
+      render json: { code: mobile_data.code }, status: :created
     else
       unavailable_error
     end

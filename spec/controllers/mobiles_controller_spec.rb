@@ -35,7 +35,8 @@ RSpec.describe MobilesController, type: :controller do
 
       it 'returns an empty json object' do
         post_request
-        expect(response.body).to eql('{}')
+        record = Mobile.last
+        expect(JSON.parse(response.body)).to eql({ 'code' => record.code })
       end
 
       it 'sets record values correctly' do
@@ -86,7 +87,8 @@ RSpec.describe MobilesController, type: :controller do
 
       it 'returns an empty json object' do
         post_request
-        expect(response.body).to eql('{}')
+        record = Mobile.order(created_at: :desc).first
+        expect(JSON.parse(response.body)).to eql({ 'code' => record.code })
       end
 
       it 'sets record values correctly' do
