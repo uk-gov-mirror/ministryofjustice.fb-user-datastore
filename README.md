@@ -45,6 +45,8 @@ bundle exec rails s
 open http://localhost:3000/api-docs
 ```
 
+They are also available at on the [GitHub Page](https://ministryofjustice.github.io/fb-user-datastore), however you will not be able to make API requests.
+
 ## Environment Variables
 
 The following environment variables are either needed, or read if present:

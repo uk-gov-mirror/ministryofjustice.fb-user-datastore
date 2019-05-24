@@ -6,7 +6,109 @@
     "description": "JWT is used for authenticating with this API. For the purposes of swagger, JWT has been disabled and no authentication is required."
   },
   "paths": {
-    "/service/{service_slug}/savereturn/email/add": {
+    "/service/{service_slug}/savereturn/signin/email/add": {
+      "post": {
+        "summary": "send signin email to user",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                },
+                "encrypted_details": {
+                  "type": "string",
+                  "example": "encrypted:payload"
+                },
+                "duration": {
+                  "type": "integer",
+                  "required": false,
+                  "default": 120,
+                  "example": 120
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "email confirmation created",
+            "examples": {
+              "application/json": {
+                "token": "this-is-a-guid"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/signin/email/validate": {
+      "post": {
+        "summary": "confirm magiclink",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "magiclink": {
+                  "type": "string",
+                  "required": true,
+                  "example": "352ded7d-405b-44d5-b825-de8f39fd5869"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "magiclink correct and processed"
+          },
+          "404": {
+            "description": "magic link not found"
+          },
+          "400": {
+            "description": "magiclink already used or expired"
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/setup/email/add": {
       "post": {
         "summary": "send confirmation email to user",
         "consumes": [
@@ -59,7 +161,7 @@
         }
       }
     },
-    "/service/{service_slug}/savereturn/email/confirm": {
+    "/service/{service_slug}/savereturn/setup/email/validate": {
       "post": {
         "summary": "confirm email from magiclink",
         "consumes": [
@@ -107,7 +209,7 @@
         }
       }
     },
-    "/service/{service_slug}/savereturn/mobile/add": {
+    "/service/{service_slug}/savereturn/setup/mobile/add": {
       "post": {
         "summary": "send confirmation sms to user",
         "consumes": [
@@ -177,7 +279,7 @@
         }
       }
     },
-    "/service/{service_slug}/savereturn/mobile/confirm": {
+    "/service/{service_slug}/savereturn/setup/mobile/validate": {
       "post": {
         "summary": "confirm sms code",
         "consumes": [
@@ -232,7 +334,7 @@
         }
       }
     },
-    "/service/{service_slug}/savereturn/create": {
+    "/service/{service_slug}/savereturn/record/create": {
       "post": {
         "summary": "create save and return record for user",
         "consumes": [
@@ -306,7 +408,7 @@
         }
       }
     },
-    "/service/{service_slug}/savereturn/delete": {
+    "/service/{service_slug}/savereturn/record/delete": {
       "delete": {
         "summary": "delete save and return record",
         "consumes": [
@@ -341,108 +443,6 @@
         "responses": {
           "200": {
             "description": "save and return record deleted"
-          }
-        }
-      }
-    },
-    "/service/{service_slug}/savereturn/signin/email": {
-      "post": {
-        "summary": "send signin email to user",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "service_slug",
-            "in": "path",
-            "schema": {
-              "type": "string",
-              "required": true
-            },
-            "required": true
-          },
-          {
-            "name": "json",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "user@example.com"
-                },
-                "encrypted_email": {
-                  "type": "string",
-                  "example": "encrypted:user@example.com"
-                },
-                "encrypted_details": {
-                  "type": "string",
-                  "example": "encrypted:payload"
-                },
-                "duration": {
-                  "type": "integer",
-                  "required": false,
-                  "default": 120,
-                  "example": 120
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "email confirmation created",
-            "examples": {
-              "application/json": {
-                "token": "this-is-a-guid"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/service/{service_slug}/savereturn/signin/magiclink": {
-      "post": {
-        "summary": "confirm magiclink",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "service_slug",
-            "in": "path",
-            "schema": {
-              "type": "string",
-              "required": true
-            },
-            "required": true
-          },
-          {
-            "name": "json",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "magiclink": {
-                  "type": "string",
-                  "required": true,
-                  "example": "352ded7d-405b-44d5-b825-de8f39fd5869"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "magiclink correct and processed"
-          },
-          "404": {
-            "description": "magic link not found"
-          },
-          "400": {
-            "description": "magiclink already used or expired"
           }
         }
       }

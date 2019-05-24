@@ -5,7 +5,7 @@ RSpec.describe 'save and return record' do
     allow_any_instance_of(ApplicationController).to receive(:disable_jwt?).and_return(true)
   end
 
-  path '/service/{service_slug}/savereturn/create' do
+  path '/service/{service_slug}/savereturn/record/create' do
     post 'create save and return record for user' do
       consumes 'application/json'
 
@@ -73,7 +73,7 @@ RSpec.describe 'save and return record' do
     end
   end
 
-  path '/service/{service_slug}/savereturn/delete' do
+  path '/service/{service_slug}/savereturn/record/delete' do
     delete 'delete save and return record' do
       consumes 'application/json'
 
