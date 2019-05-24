@@ -3,30 +3,18 @@ class MobilesController < ApplicationController
     supersede_existing_mobiles
 
     mobile_data = Mobile.new(service_slug: params[:service_slug],
-                             mobile: params[:sms][:to],
                              encrypted_email: params[:encrypted_email],
                              encrypted_payload: params[:encrypted_details],
                              expires_at: expires_at)
 
-    ActiveRecord::Base.transaction do
-      if mobile_data.save
-        SmsSender.new(sms_data_object: sms_data_object, extra_personalisation: { code: mobile_data.code }).call
-        render json: {}, status: :created
-      else
-        unavailable_error
-      end
+    if mobile_data.save
+      render json: {}, status: :created
+    else
+      unavailable_error
     end
   end
 
   private
-
-  def sms_data_object
-    DataObject::Sms.new(sms_params)
-  end
-
-  def sms_params
-    params.require(:sms).permit(:to, :body, :template_name)
-  end
 
   def expires_at
     Time.now + duration
@@ -47,7 +35,7 @@ class MobilesController < ApplicationController
   def mobile_record_params
     {
       service_slug: params[:service_slug],
-      mobile: params[:sms][:to]
+      encrypted_email: params[:encrypted_email]
     }
   end
 

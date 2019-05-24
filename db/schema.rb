@@ -38,13 +38,12 @@ ActiveRecord::Schema.define(version: 2019_05_23_125938) do
   end
 
   create_table "mobiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "service_slug"
-    t.string "mobile"
-    t.text "encrypted_email"
-    t.text "encrypted_payload"
-    t.datetime "expires_at"
-    t.string "validity", default: "valid", null: false
-    t.string "code", null: false
+    t.text "service_slug", null: false
+    t.text "encrypted_email", null: false
+    t.text "encrypted_payload", null: false
+    t.datetime "expires_at", null: false
+    t.text "validity", default: "valid", null: false
+    t.text "code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["service_slug", "encrypted_email"], name: "index_mobiles_on_service_slug_and_encrypted_email"
