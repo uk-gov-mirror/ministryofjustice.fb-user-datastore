@@ -18,4 +18,7 @@ Rails.application.routes.draw do
 
   post '/service/:service_slug/savereturn/signin/email/add', to: 'email_signins#add'
   post '/service/:service_slug/savereturn/signin/email/validate', to: 'email_signins#validate'
+
+  post '/service/:service_slug/savereturn/signin/mobile/add', to: 'mobile_signins#add'
+  post '/service/:service_slug/savereturn/signin/mobile/validate', to: 'mobile_signins#validate'
 end

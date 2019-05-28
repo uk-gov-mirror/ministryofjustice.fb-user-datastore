@@ -209,6 +209,101 @@
         }
       }
     },
+    "/service/{service_slug}/savereturn/signin/mobile/add": {
+      "post": {
+        "summary": "send signin mobile to user",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "encrypted_email": {
+                  "type": "string",
+                  "example": "encrypted:user@example.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "mobile code created",
+            "examples": {
+              "application/json": {
+                "code": "12345"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/service/{service_slug}/savereturn/signin/mobile/validate": {
+      "post": {
+        "summary": "confirm magiclink",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "service_slug",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "required": true
+            },
+            "required": true
+          },
+          {
+            "name": "json",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "encrypted_email": {
+                  "type": "string",
+                  "required": true,
+                  "example": "encrypted:user@example.com"
+                },
+                "code": {
+                  "type": "string",
+                  "required": true,
+                  "example": "12345"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "code correct and processed",
+            "examples": {
+              "application/json": {
+                "encrypted_details": "encrypted:payload"
+              }
+            }
+          },
+          "401": {
+            "description": "magiclink already used or expired"
+          }
+        }
+      }
+    },
     "/service/{service_slug}/savereturn/setup/mobile/add": {
       "post": {
         "summary": "send confirmation sms to user",
