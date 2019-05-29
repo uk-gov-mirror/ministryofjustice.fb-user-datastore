@@ -10,4 +10,8 @@ class MagicLink < ApplicationRecord
   def expired?
     expires_at < Time.now
   end
+
+  def valid_link?
+    validity == 'valid'
+  end
 end

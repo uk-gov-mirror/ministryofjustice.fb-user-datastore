@@ -18,6 +18,7 @@ class EmailSigninsController < ApplicationController
     return render_magic_link_missing_error unless magic_link
     return render_magic_link_used_error if magic_link.used?
     return render_magic_link_expired_error if magic_link.expired?
+    return render_magic_link_invalid_error unless magic_link.valid_link?
 
     magic_link.mark_as_used
 
@@ -45,6 +46,11 @@ class EmailSigninsController < ApplicationController
   def render_magic_link_missing_error
     render json: { code: 404,
                    name: 'invalid.link' }, status: 404
+  end
+
+  def render_magic_link_invalid_error
+    render json: { code: 400,
+                   name: 'invalid.link' }, status: 400
   end
 
   def render_magic_link_used_error

@@ -8,9 +8,7 @@ RSpec.describe EmailSigninsController do
 
   describe 'POST #add' do
     let(:json_hash) do
-      {
-        encrypted_email: 'encrypted:user@example.com',
-      }
+      { encrypted_email: 'encrypted:user@example.com' }
     end
 
     let(:do_post!) do
@@ -157,6 +155,30 @@ RSpec.describe EmailSigninsController do
 
           expect(response.status).to eql(400)
           expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'expired.link' })
+        end
+      end
+
+      context 'when in incorrect validaity' do
+        let!(:magic_link) do
+          MagicLink.create!(service_slug: 'service-slug',
+                            encrypted_email: 'encrypted:user@example.com',
+                            expires_at: 24.hours.from_now,
+                            validity: 'foo')
+        end
+
+        let!(:save_return) do
+          SaveReturn.create!(service_slug: 'service-slug',
+                             encrypted_email: 'encrypted:user@example.com',
+                             encrypted_payload: 'encrypted:payload',
+                             expires_at: 28.days.from_now)
+        end
+
+        it 'returns 400 with error' do
+          post :validate, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          expect(response.status).to eql(400)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'invalid.link' })
         end
       end
 
