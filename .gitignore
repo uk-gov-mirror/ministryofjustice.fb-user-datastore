@@ -71,3 +71,7 @@ node_modules/
 .DS_Store
 
 spec/examples.txt
+
+# Ignore node_modules and package-lock.json
+node_modules
+package-lock.json
