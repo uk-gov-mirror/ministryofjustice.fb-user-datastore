@@ -1,4 +1,5 @@
 # fb-user-datastore
+[![CircleCI](https://circleci.com/gh/ministryofjustice/fb-user-datastore/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/fb-user-datastore/tree/master)
 [![Build Status](https://travis-ci.org/ministryofjustice/fb-user-datastore.svg?branch=master)](https://travis-ci.org/ministryofjustice/fb-user-datastore)
 
 User Data store API for services built and deployed on Form Builder
