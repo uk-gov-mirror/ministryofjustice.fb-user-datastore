@@ -44,3 +44,8 @@ spec:
               secretKeyRef:
                 name: fb-platform-datastore-token-{{ .Values.environmentName }}
                 key: token
+          - name: SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: fb-user-filestore-api-secrets-{{ .Values.environmentName }}
+                key: sentry_dsn

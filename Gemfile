@@ -9,6 +9,7 @@ gem 'puma', '~> 3.11'
 gem 'redis', '~> 4.0'
 gem 'nokogiri', '~> 1.8.5'
 gem 'jwt'
+gem 'sentry-raven'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
