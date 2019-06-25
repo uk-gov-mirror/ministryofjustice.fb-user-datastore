@@ -32,6 +32,7 @@ group :test do
   gem 'faker'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'simplecov'
+  gem 'simplecov-console', require: false
   gem 'webmock'
   gem 'timecop'
 end
