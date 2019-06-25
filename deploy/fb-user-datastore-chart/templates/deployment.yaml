@@ -17,7 +17,7 @@ spec:
       serviceAccountName: "formbuilder-user-datastore-{{ .Values.environmentName }}"
       containers:
       - name: "fb-user-datastore-api-{{ .Values.environmentName }}"
-        image: "754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-user-datastore-api:latest-{{ .Values.platformEnv }}"
+        image: "754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-user-datastore-api:{{ .Values.circleSha1 }}"
         securityContext:
           runAsUser: 1001
         imagePullPolicy: Always
