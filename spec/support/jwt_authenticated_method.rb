@@ -10,7 +10,8 @@ RSpec.shared_examples 'a JWT-authenticated method' do |method, url, payload|
   }
   let(:service_token) { 'ServiceToken' }
   before do
-    allow_any_instance_of(ApplicationController).to receive(:get_service_token).and_return(service_token)
+    allow_any_instance_of(Adapters::ServiceTokenCacheClient).to receive(:get)
+      .and_return(service_token)
     send(method, url, headers: headers)
   end
 
