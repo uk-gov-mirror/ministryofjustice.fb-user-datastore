@@ -103,6 +103,38 @@ RSpec.describe MobilesController, type: :controller do
         expect(record.validity).to eq('valid')
       end
     end
+
+    context 'with incorrect mobile data' do
+      context 'without an encrypted email' do
+        let(:json_hash) do
+          {
+            encrypted_email: nil,
+            encrypted_details: 'encryptedDetails',
+            duration: '30'
+          }
+        end
+
+        it 'renders an unavailable error' do
+          post_request
+          expect(response).to have_http_status(503)
+        end
+      end
+
+      context 'without encrypted details' do
+        let(:json_hash) do
+          {
+            encrypted_email: 'encryptedEmail',
+            encrypted_details: nil,
+            duration: '30'
+          }
+        end
+
+        it 'renders an unavailable error' do
+          post_request
+          expect(response).to have_http_status(503)
+        end
+      end
+    end
   end
 
   describe 'POST /service/:service_slug/savereturn/mobile/confirm' do
