@@ -4,6 +4,8 @@ Rails.application.routes.draw do
     mount Rswag::Api::Engine => '/api-docs'
   end
 
+  get '/health', to: 'health#show'
+
   get '/service/:service_slug/user/:user_id', to: 'user_data#show'
   post '/service/:service_slug/user/:user_id', to: 'user_data#create_or_update'
 
