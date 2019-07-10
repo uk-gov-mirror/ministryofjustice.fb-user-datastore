@@ -43,13 +43,10 @@ module Concerns
         # so we have to do it manually
         iat_skew = payload['iat'].to_i - Time.current.to_i
         if iat_skew.abs > leeway.to_i
-          Rails.logger.debug("iat skew is #{iat_skew}, max is #{leeway} - INVALID")
           raise Exceptions::TokenNotValidError.new
         end
 
-        Rails.logger.debug "token is valid"
       rescue StandardError => e
-        Rails.logger.debug("Couldn't parse that token - error #{e}")
         raise Exceptions::TokenNotValidError.new
       end
     end
