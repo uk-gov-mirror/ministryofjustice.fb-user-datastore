@@ -5,6 +5,7 @@ metadata:
   namespace: formbuilder-platform-{{ .Values.environmentName }}
 spec:
   schedule: "0 * * * *"
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
