@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: fb-user-datastore-cronjob-db-sweeper-{{ .Values.environmentName }}
+  name: fb-datastore-cron-db-sweeper-{{ .Values.environmentName }}
   namespace: formbuilder-platform-{{ .Values.environmentName }}
 spec:
   schedule: "0 * * * *"
