@@ -16,6 +16,8 @@ RUN bundle install --jobs 4 --retry 5 --deployment --without test development
 COPY . .
 ADD . $RAILS_ROOT
 
+ADD https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem ./rds-combined-ca-bundle.pem
+
 # install kubectl as described at
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/
 RUN apt-get update && apt-get install -y apt-transport-https
