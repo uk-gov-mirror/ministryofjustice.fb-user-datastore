@@ -1,3 +1,5 @@
+DOCKER_COMPOSE = docker-compose -f docker-compose.yml
+
 ifdef TARGET
 TARGETDEFINED="true"
 else
@@ -49,6 +51,21 @@ push: login
 	docker push ${ECR_REPO_URL}:latest-${env_stub}
 	docker push ${ECR_REPO_URL}:${CIRCLE_SHA1} #multiple tags in ECR can only be done by pushing twice
 
+serve: stop
+	$(DOCKER_COMPOSE) build --build-arg BUNDLE_FLAGS=''
+	$(DOCKER_COMPOSE) up -d db
+	./scripts/wait_for_db.sh db postgres
+	$(DOCKER_COMPOSE) up -d app
+
+stop:
+	$(DOCKER_COMPOSE) down -v
+
+test: stop
+	$(DOCKER_COMPOSE) build --build-arg BUNDLE_FLAGS='--without development'
+	$(DOCKER_COMPOSE) up -d db
+	./scripts/wait_for_db.sh db postgres
+	$(DOCKER_COMPOSE) run -e RAILS_ENV=test --rm app bundle exec rspec
+
 build_and_push: build push
 
-.PHONY := init push build login
+.PHONY := init push build login test stop serve

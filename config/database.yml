@@ -81,6 +81,4 @@ test:
 #
 production:
   <<: *default
-  database: fb-user-datastore_production
-  username: fb-user-datastore
-  password: <%= ENV['FB-USER-DATASTORE_DATABASE_PASSWORD'] %>
+  url: <%= "#{ENV['DATABASE_URL']}?sslmode=verify-full&sslrootcert=#{Rails.root.join("rds-combined-ca-bundle.pem")}" %>

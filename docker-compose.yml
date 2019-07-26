@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: submitter_local
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      DATABASE_URL: "postgres://postgres:password@db/submitter_local"
+      RAILS_ENV: development
+      RAILS_SERVE_STATIC_FILES: "false"
+      MAX_IAT_SKEW_SECONDS: "60"
+      RAILS_LOG_TO_STDOUT: "true"
+      SECRET_KEY_BASE: 'secret_key_base'
+    links:
+      - db
+    ports:
+      - "3000:3000"
+
