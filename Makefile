@@ -68,4 +68,4 @@ test: stop
 
 build_and_push: build push
 
-.PHONY := init push build login
+.PHONY := init push build login test stop serve
