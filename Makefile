@@ -60,7 +60,7 @@ serve: stop
 stop:
 	$(DOCKER_COMPOSE) down -v
 
-spec: stop
+test: stop
 	$(DOCKER_COMPOSE) build --build-arg BUNDLE_FLAGS='--without development'
 	$(DOCKER_COMPOSE) up -d db
 	./scripts/wait_for_db.sh db postgres
