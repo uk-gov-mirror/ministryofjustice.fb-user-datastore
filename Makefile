@@ -60,6 +60,12 @@ serve: stop
 stop:
 	$(DOCKER_COMPOSE) down -v
 
+spec: stop
+	$(DOCKER_COMPOSE) build --build-arg BUNDLE_FLAGS='--without development'
+	$(DOCKER_COMPOSE) up -d db
+	./scripts/wait_for_db.sh db postgres
+	$(DOCKER_COMPOSE) run -e RAILS_ENV=test --rm app bundle exec rspec
+
 build_and_push: build push
 
 .PHONY := init push build login

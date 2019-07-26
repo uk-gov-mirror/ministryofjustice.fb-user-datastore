@@ -3,27 +3,13 @@ jobs:
   test:
     working_directory: ~/circle
     docker:
-      - image: ministryofjustice/ruby:2.5.1
-        environment:
-          RAILS_ENV: test
-          PGHOST: 127.0.0.1
-          PGUSER: root
-          DATABASE_URL: postgresql://root@localhost/fb-user-datastore_test
-      - image: circleci/postgres:10.6-alpine-ram
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle-test_test
+      - image: asmega/fb-builder:latest
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: bundle install
-          command: 'bundle install --deployment --jobs=2 --retry 3 --without development'
-      - run:
-          name: setup database
-          command: 'RAILS_ENV=test bundle exec rake db:create db:schema:load'
-      - run:
-          name: test
-          command: 'bundle exec rspec'
+          name: make spec
+          command: make spec
   build_and_deploy_to_test:
     working_directory: ~/circle/git/fb-user-datastore
     docker:
