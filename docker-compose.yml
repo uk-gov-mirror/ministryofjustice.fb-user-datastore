@@ -22,3 +22,6 @@ services:
       SECRET_KEY_BASE: 'secret_key_base'
     links:
       - db
+    ports:
+      - "3000:3000"
+
