@@ -8,8 +8,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: make test
-          command: make test
+          name: make spec
+          command: make spec
   build_and_deploy_to_test:
     working_directory: ~/circle/git/fb-user-datastore
     docker:

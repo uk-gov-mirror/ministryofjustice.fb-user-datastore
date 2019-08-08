@@ -42,7 +42,7 @@ install_build_dependencies: init
 
 
 build: install_build_dependencies
-	docker build -t ${ECR_REPO_URL}:latest-${env_stub} -t ${ECR_REPO_URL}:${CIRCLE_SHA1} -f ./Dockerfile .
+	docker build -t ${ECR_REPO_URL}:latest-${env_stub} --build-arg BUNDLE_FLAGS="--without test development" -t ${ECR_REPO_URL}:${CIRCLE_SHA1} -f ./Dockerfile .
 
 login: init
 	@eval $(shell aws ecr get-login --no-include-email --region eu-west-2)
@@ -60,8 +60,8 @@ serve: stop
 stop:
 	$(DOCKER_COMPOSE) down -v
 
-test: stop
-	$(DOCKER_COMPOSE) build --build-arg BUNDLE_FLAGS='--without development'
+spec: stop
+	$(DOCKER_COMPOSE) build
 	$(DOCKER_COMPOSE) up -d db
 	./scripts/wait_for_db.sh db postgres
 	$(DOCKER_COMPOSE) run -e RAILS_ENV=test --rm app bundle exec rspec
