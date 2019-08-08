@@ -1,40 +1,26 @@
-FROM ministryofjustice/ruby:2.5.1
+FROM ruby:2.6.3-alpine3.9
 
-# https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apk add --update build-base postgresql-contrib postgresql-dev bash libcurl
 
-RUN apt-get update && apt-get install -y nodejs postgresql-contrib libpq-dev
+RUN addgroup -g 1001 -S appgroup && \
+  adduser -u 1001 -S appuser -G appgroup
 
-ENV RAILS_ROOT /var/www/fb-user-datastore
-RUN mkdir -p $RAILS_ROOT
-WORKDIR $RAILS_ROOT
+WORKDIR /app
 
-COPY . $RAILS_ROOT
+COPY Gemfile* .ruby-version ./
 
-ARG BUNDLE_FLAGS="--without development test"
-ENV BUNDLER_VERSION 2.0.2
-RUN gem install bundler
-RUN bundle install --jobs 2 --retry 3 --no-cache --deployment ${BUNDLE_FLAGS}
+ARG BUNDLE_FLAGS
+RUN bundle install --jobs 2 --retry 3 --no-cache ${BUNDLE_FLAGS}
+
+COPY . .
 
 ADD https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem ./rds-combined-ca-bundle.pem
 
-# install kubectl as described at
-# https://kubernetes.io/docs/tasks/tools/install-kubectl/
-RUN apt-get update && apt-get install -y apt-transport-https
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-RUN touch /etc/apt/sources.list.d/kubernetes.list
-RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-RUN apt-get update
-RUN apt-get install -y kubectl
-
-RUN groupadd -r deploy && useradd -m -u 1001 -r -g deploy deploy
-RUN chown -R deploy $RAILS_ROOT
+RUN chown -R 1001:appgroup /app
 USER 1001
 
-# allow access to port 3000
 ENV APP_PORT 3000
 EXPOSE $APP_PORT
 
-# run the rails server
 ARG RAILS_ENV=production
 CMD bundle exec rake db:migrate && bundle exec rails s -e ${RAILS_ENV} -p ${APP_PORT} --binding=0.0.0.0
