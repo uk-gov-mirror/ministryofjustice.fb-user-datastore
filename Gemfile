@@ -6,7 +6,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rails', '~> 5.2.3'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.0'
-gem 'nokogiri', '~> 1.10.3'
+gem 'nokogiri', '~> 1.10.4'
 gem 'jwt'
 gem 'sentry-raven'
 
