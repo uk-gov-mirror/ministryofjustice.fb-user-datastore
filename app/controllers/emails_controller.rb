@@ -31,23 +31,23 @@ class EmailsController < ApplicationController
   private
 
   def render_link_invalid
-    render json: { code: 404,
-                   name: 'invalid.link' }, status: 404
+    render json: { code: 401,
+                   name: 'token.invalid' }, status: 401
   end
 
   def render_expired
-    render json: { code: 410,
-                   name: 'expired.link'}, status: 410
+    render json: { code: 401,
+                   name: 'token.expired'}, status: 401
   end
 
   def render_used
-    render json: { code: 410,
-                   name: 'used.link'}, status: 410
+    render json: { code: 401,
+                   name: 'token.used'}, status: 401
   end
 
   def render_superseded
-    render json: { code: 400,
-                   name: 'superseded.link'}, status: 400
+    render json: { code: 401,
+                   name: 'token.superseded'}, status: 401
   end
 
   def expires_at

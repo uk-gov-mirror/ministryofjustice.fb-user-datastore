@@ -8,6 +8,22 @@ class Mobile < ApplicationRecord
     update_attribute(:validity, 'used')
   end
 
+  def expired?
+    expires_at < Time.now
+  end
+
+  def used?
+    validity == 'used'
+  end
+
+  def superseded?
+    validity == 'superseded'
+  end
+
+  def valid_code?
+    validity == 'valid'
+  end
+
   private
 
   def generate_code

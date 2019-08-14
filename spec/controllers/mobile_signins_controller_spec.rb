@@ -131,7 +131,7 @@ RSpec.describe MobileSigninsController do
                             body: json_hash.to_json
 
           expect(response.status).to eql(401)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'invalid.link' })
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'code.invalid' })
         end
       end
 
@@ -152,7 +152,7 @@ RSpec.describe MobileSigninsController do
                             body: json_hash.to_json
 
           expect(response.status).to eql(401)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'used.link' })
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'code.used' })
         end
       end
 
@@ -172,7 +172,7 @@ RSpec.describe MobileSigninsController do
                             body: json_hash.to_json
 
           expect(response.status).to eql(401)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'expired.link' })
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'code.expired' })
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe MobileSigninsController do
                             body: json_hash.to_json
 
           expect(response.status).to eql(401)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'superseded.link' })
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'code.superseded' })
         end
       end
 
@@ -206,7 +206,7 @@ RSpec.describe MobileSigninsController do
                             body: json_hash.to_json
 
           expect(response.status).to eql(401)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'invalid.link' })
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'code.invalid' })
         end
       end
 

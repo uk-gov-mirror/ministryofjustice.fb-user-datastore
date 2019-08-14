@@ -108,12 +108,12 @@ RSpec.describe EmailSigninsController do
           { 'magiclink': 'i-do-not-exist' }
         end
 
-        it 'returns 404 with error' do
+        it 'returns 401 with error' do
           post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
-          expect(response.status).to eql(404)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 404, 'name' => 'invalid.link' })
+          expect(response.status).to eql(401)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.invalid' })
         end
       end
 
@@ -129,12 +129,33 @@ RSpec.describe EmailSigninsController do
           magic_link
         end
 
-        it 'returns 400 with error' do
+        it 'returns 401 with error' do
           post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
-          expect(response.status).to eql(400)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'used.link' })
+          expect(response.status).to eql(401)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.used' })
+        end
+      end
+
+      context 'when magic link is superseded' do
+        let(:magic_link) do
+          MagicLink.create!(service_slug: 'service-slug',
+                            encrypted_email: 'encrypted:user@example.com',
+                            validity: 'superseded',
+                            expires_at: 24.hours.from_now)
+        end
+
+        before :each do
+          magic_link
+        end
+
+        it 'returns 401 with error' do
+          post :validate, params: { service_slug: 'service-slug' },
+                            body: json_hash.to_json
+
+          expect(response.status).to eql(401)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.superseded' })
         end
       end
 
@@ -149,12 +170,12 @@ RSpec.describe EmailSigninsController do
           magic_link
         end
 
-        it 'returns 400 with error' do
+        it 'returns 401 with error' do
           post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
-          expect(response.status).to eql(400)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'expired.link' })
+          expect(response.status).to eql(401)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.expired' })
         end
       end
 
@@ -173,12 +194,12 @@ RSpec.describe EmailSigninsController do
                              expires_at: 28.days.from_now)
         end
 
-        it 'returns 400 with error' do
+        it 'returns 401 with error' do
           post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
-          expect(response.status).to eql(400)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'invalid.link' })
+          expect(response.status).to eql(401)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.invalid' })
         end
       end
 
@@ -187,12 +208,12 @@ RSpec.describe EmailSigninsController do
           magic_link
         end
 
-        it 'returns 500 with error' do
+        it 'returns 401 with error' do
           post :validate, params: { service_slug: 'service-slug' },
                             body: json_hash.to_json
 
-          expect(response.status).to eql(500)
-          expect(JSON.parse(response.body)).to eql({ 'code' => 500, 'name' => 'missing.savereturn' })
+          expect(response.status).to eql(401)
+          expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.invalid' })
         end
       end
     end

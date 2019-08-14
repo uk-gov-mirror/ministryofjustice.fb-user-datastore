@@ -14,4 +14,8 @@ class MagicLink < ApplicationRecord
   def valid_link?
     validity == 'valid'
   end
+
+  def superseded?
+    validity == 'superseded'
+  end
 end

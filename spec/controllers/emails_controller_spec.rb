@@ -126,8 +126,8 @@ RSpec.describe EmailsController, type: :controller do
       it 'returns link invalid' do
         post :validate, params: { service_slug: 'service-slug', email_token: 'idontexist' }
 
-        expect(response.status).to eql(404)
-        expect(JSON.parse(response.body)).to eql({ 'code' => 404, 'name' => 'invalid.link' })
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.invalid' })
       end
     end
 
@@ -143,8 +143,8 @@ RSpec.describe EmailsController, type: :controller do
       it 'returns expired' do
         post :validate, params: { service_slug: email.service_slug, email_token: email.id }
 
-        expect(response.status).to eql(410)
-        expect(JSON.parse(response.body)).to eql({ 'code' => 410, 'name' => 'expired.link' })
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.expired' })
       end
     end
 
@@ -160,8 +160,8 @@ RSpec.describe EmailsController, type: :controller do
       it 'returns used' do
         post :validate, params: { service_slug: email.service_slug, email_token: email.id }
 
-        expect(response.status).to eql(410)
-        expect(JSON.parse(response.body)).to eql({ 'code' => 410, 'name' => 'used.link' })
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.used' })
       end
     end
 
@@ -177,8 +177,8 @@ RSpec.describe EmailsController, type: :controller do
       it 'returns superseded error' do
         post :validate, params: { service_slug: email.service_slug, email_token: email.id }
 
-        expect(response.status).to eql(400)
-        expect(JSON.parse(response.body)).to eql({ 'code' => 400, 'name' => 'superseded.link' })
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'token.superseded' })
       end
     end
   end

@@ -56,22 +56,22 @@ class MobileSigninsController < ApplicationController
 
   def render_code_invalid_error
     render json: { code: 401,
-                   name: 'invalid.link' }, status: 401
+                   name: 'code.invalid' }, status: 401
   end
 
   def render_code_used_error
     render json: { code: 401,
-                   name: 'used.link' }, status: 401
+                   name: 'code.used' }, status: 401
   end
 
   def render_code_expired_error
     render json: { code: 401,
-                   name: 'expired.link' }, status: 401
+                   name: 'code.expired' }, status: 401
   end
 
   def render_code_superseded_error
     render json: { code: 401,
-                   name: 'superseded.link' }, status: 401
+                   name: 'code.superseded' }, status: 401
   end
 
   def render_save_and_return_missing_error

@@ -207,5 +207,80 @@ RSpec.describe MobilesController, type: :controller do
         expect(response.status).to eql(401)
       end
     end
+
+    context 'when code has expired' do
+      let!(:record) do
+        Mobile.create!(service_slug: service_slug,
+                       encrypted_email: 'encrypted:user@example.com',
+                       encrypted_payload: 'encrypted:payload',
+                       expires_at: 2.days.ago,
+                       code: '12345',
+                       validity: 'valid')
+      end
+
+      let(:json_hash) do
+        {
+          encrypted_email: 'encrypted:user@example.com',
+          code: '12345'
+        }
+      end
+
+      it 'returns 401' do
+        post_request
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)['name']).to eql('code.expired')
+        expect(JSON.parse(response.body)['code']).to eql(401)
+      end
+    end
+
+    context 'when code has been used' do
+      let!(:record) do
+        Mobile.create!(service_slug: service_slug,
+                       encrypted_email: 'encrypted:user@example.com',
+                       encrypted_payload: 'encrypted:payload',
+                       expires_at: 2.days.from_now,
+                       code: '12345',
+                       validity: 'used')
+      end
+
+      let(:json_hash) do
+        {
+          encrypted_email: 'encrypted:user@example.com',
+          code: '12345'
+        }
+      end
+
+      it 'returns 401' do
+        post_request
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)['name']).to eql('code.used')
+        expect(JSON.parse(response.body)['code']).to eql(401)
+      end
+    end
+
+    context 'when code has been superseded' do
+      let!(:record) do
+        Mobile.create!(service_slug: service_slug,
+                       encrypted_email: 'encrypted:user@example.com',
+                       encrypted_payload: 'encrypted:payload',
+                       expires_at: 2.days.from_now,
+                       code: '12345',
+                       validity: 'superseded')
+      end
+
+      let(:json_hash) do
+        {
+          encrypted_email: 'encrypted:user@example.com',
+          code: '12345'
+        }
+      end
+
+      it 'returns 401' do
+        post_request
+        expect(response.status).to eql(401)
+        expect(JSON.parse(response.body)['name']).to eql('code.superseded')
+        expect(JSON.parse(response.body)['code']).to eql(401)
+      end
+    end
   end
 end
