@@ -18,6 +18,7 @@ class EmailSigninsController < ApplicationController
     return render_magic_link_missing_error unless magic_link
     return render_magic_link_used_error if magic_link.used?
     return render_magic_link_expired_error if magic_link.expired?
+    return render_magic_link_superseded if magic_link.superseded?
     return render_magic_link_invalid_error unless magic_link.valid_link?
 
     magic_link.mark_as_used
@@ -44,27 +45,32 @@ class EmailSigninsController < ApplicationController
   end
 
   def render_magic_link_missing_error
-    render json: { code: 404,
-                   name: 'invalid.link' }, status: 404
+    render json: { code: 401,
+                   name: 'token.invalid' }, status: 401
+  end
+
+  def render_magic_link_superseded
+    render json: { code: 401,
+                   name: 'token.superseded' }, status: 401
   end
 
   def render_magic_link_invalid_error
-    render json: { code: 400,
-                   name: 'invalid.link' }, status: 400
+    render json: { code: 401,
+                   name: 'token.invalid' }, status: 401
   end
 
   def render_magic_link_used_error
-    render json: { code: 400,
-                   name: 'used.link' }, status: 400
+    render json: { code: 401,
+                   name: 'token.used' }, status: 401
   end
 
   def render_magic_link_expired_error
-    render json: { code: 400,
-                   name: 'expired.link' }, status: 400
+    render json: { code: 401,
+                   name: 'token.expired' }, status: 401
   end
 
   def render_save_and_return_missing_error
-    render json: { code: 500,
-                   name: 'missing.savereturn' }, status: 500
+    render json: { code: 401,
+                   name: 'token.invalid' }, status: 401
   end
 end

@@ -81,7 +81,7 @@ RSpec.describe 'email signin' do
         run_test!
       end
 
-      response '404', 'magic link not found' do
+      response '401', 'magic link not found' do
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
@@ -94,7 +94,7 @@ RSpec.describe 'email signin' do
         run_test!
       end
 
-      response '400', 'magiclink already used or expired' do
+      response '401', 'magiclink already used or expired' do
         let(:uuid) { SecureRandom.uuid }
         let(:service_slug) { 'service-slug' }
         let(:json) do

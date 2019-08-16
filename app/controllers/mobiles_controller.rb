@@ -15,18 +15,18 @@ class MobilesController < ApplicationController
   end
 
   def validate
-    mobile = Mobile.where('expires_at > ?', Time.now)
-                   .where(validity: 'valid')
-                   .find_by(service_slug: params[:service_slug],
+    mobile = Mobile.find_by(service_slug: params[:service_slug],
                             encrypted_email: params[:encrypted_email],
                             code: params[:code])
 
-    if mobile
-      mobile.mark_as_used
-      render json: { encrypted_details: mobile.encrypted_payload }, status: :ok
-    else
-      render json: {}, status: :unauthorized
-    end
+    return render_code_invalid unless mobile
+    return render_code_expired if mobile.expired?
+    return render_code_used if mobile.used?
+    return render_code_superseded if mobile.superseded?
+    return render_code_invalid unless mobile.valid_code?
+
+    mobile.mark_as_used
+    render json: { encrypted_details: mobile.encrypted_payload }, status: :ok
   end
 
   private
@@ -61,5 +61,21 @@ class MobilesController < ApplicationController
 
   def unavailable_error
     render json: { code: 503, name: 'unavailable' }, status: 503
+  end
+
+  def render_code_invalid
+    render json: { code: 401, name: 'code.invalid' }, status: 401
+  end
+
+  def render_code_expired
+    render json: { code: 401, name: 'code.expired' }, status: 401
+  end
+
+  def render_code_used
+    render json: { code: 401, name: 'code.used' }, status: 401
+  end
+
+  def render_code_superseded
+    render json: { code: 401, name: 'code.superseded' }, status: 401
   end
 end
