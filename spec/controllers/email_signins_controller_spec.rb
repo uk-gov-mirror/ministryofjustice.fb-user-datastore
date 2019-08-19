@@ -17,6 +17,13 @@ RSpec.describe EmailSigninsController do
     end
 
     describe 'happy path' do
+      before :each do
+        SaveReturn.create!(service_slug: 'service-slug',
+                           encrypted_email: 'encrypted:user@example.com',
+                           encrypted_payload: 'encrypted:payload',
+                           expires_at: 28.days.from_now)
+      end
+
       it 'creates magic link record' do
         expect do
           do_post!
@@ -43,6 +50,13 @@ RSpec.describe EmailSigninsController do
     end
 
     describe 'if magic link for email already exists' do
+      before :each do
+        SaveReturn.create!(service_slug: 'service-slug',
+                           encrypted_email: 'encrypted:user@example.com',
+                           encrypted_payload: 'encrypted:payload',
+                           expires_at: 28.days.from_now)
+      end
+
       let!(:previous_magic_link) do
         MagicLink.create!(service_slug: 'service-slug',
                           encrypted_email: 'encrypted:user@example.com',
@@ -59,6 +73,21 @@ RSpec.describe EmailSigninsController do
         expect do
           do_post!
         end.to change(MagicLink, :count).by(1)
+      end
+    end
+
+    context 'when there is no associated save and return record' do
+      it 'does not create a magic link record' do
+        expect do
+          do_post!
+        end.to_not change(MagicLink, :count)
+      end
+
+      it 'returns 401' do
+        do_post!
+
+        expect(response).to be_unauthorized
+        expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'email.missing' })
       end
     end
   end

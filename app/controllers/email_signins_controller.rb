@@ -2,6 +2,11 @@ class EmailSigninsController < ApplicationController
   def add
     supersede_existing_records
 
+    save_return = SaveReturn.find_by(service_slug: params[:service_slug],
+                                     encrypted_email: params[:encrypted_email])
+
+    return render_email_missing_error unless save_return
+
     magic_link = MagicLink.new(service_slug: params[:service_slug],
                                encrypted_email: params[:encrypted_email],
                                expires_at: expires_at)
@@ -72,5 +77,10 @@ class EmailSigninsController < ApplicationController
   def render_save_and_return_missing_error
     render json: { code: 401,
                    name: 'token.invalid' }, status: 401
+  end
+
+  def render_email_missing_error
+    render json: { code: 401,
+                   name: 'email.missing' }, status: 401
   end
 end
