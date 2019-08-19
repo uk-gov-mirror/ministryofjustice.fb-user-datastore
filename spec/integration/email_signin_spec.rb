@@ -26,6 +26,13 @@ RSpec.describe 'email signin' do
       }
 
       response '201', 'email confirmation created' do
+        before :each do
+          SaveReturn.create!(service_slug: 'service-slug',
+                             encrypted_email: 'encrypted:user@example.com',
+                             encrypted_payload: 'encrypted:payload',
+                             expires_at: 28.days.from_now)
+        end
+
         let(:service_slug) { 'service-slug' }
         let(:json) do
           {
