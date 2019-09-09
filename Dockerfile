@@ -10,6 +10,7 @@ WORKDIR /app
 COPY Gemfile* .ruby-version ./
 
 ARG BUNDLE_FLAGS
+RUN gem install bundler
 RUN bundle install --jobs 2 --retry 3 --no-cache ${BUNDLE_FLAGS}
 
 COPY . .

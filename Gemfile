@@ -6,7 +6,6 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rails', '~> 5.2.3'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.1'
-gem 'nokogiri', '~> 1.10.4'
 gem 'jwt'
 gem 'sentry-raven'
 
@@ -31,8 +30,6 @@ group :test do
   gem 'shoulda-matchers', '~> 4.1'
   gem 'simplecov'
   gem 'simplecov-console', require: false
-  gem 'webmock'
-  gem 'timecop'
 end
 
 gem 'tzinfo-data'
