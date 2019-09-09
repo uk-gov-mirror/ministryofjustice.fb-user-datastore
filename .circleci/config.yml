@@ -18,10 +18,10 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "0f:df:74:9e:82:a9:98:7d:0e:fa:be:1a:40:db:77:83"
+            - "9f:66:01:8b:19:3c:0e:40:6f:b8:e0:11:a4:43:09:af"
       - run:
           name: checkout fb-user-datastore-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_0fdf749e82a9987d0efabe1a40db7783 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-user-datastore-deploy.git ~/circle/git/fb-user-datastore-deploy"
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_9f66018b193c0e406fb8e011a44309af -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-user-datastore-deploy.git ~/circle/git/fb-user-datastore-deploy"
       - run:
           name: persist git crypt key to disk
           command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
@@ -52,10 +52,10 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "0f:df:74:9e:82:a9:98:7d:0e:fa:be:1a:40:db:77:83"
+            - "9f:66:01:8b:19:3c:0e:40:6f:b8:e0:11:a4:43:09:af"
       - run:
           name: checkout fb-user-datastore-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_0fdf749e82a9987d0efabe1a40db7783 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-user-datastore-deploy.git ~/circle/git/fb-user-datastore-deploy"
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_9f66018b193c0e406fb8e011a44309af -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-user-datastore-deploy.git ~/circle/git/fb-user-datastore-deploy"
       - run:
           name: persist git crypt key to disk
           command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
@@ -86,10 +86,10 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "0f:df:74:9e:82:a9:98:7d:0e:fa:be:1a:40:db:77:83"
+            - "9f:66:01:8b:19:3c:0e:40:6f:b8:e0:11:a4:43:09:af"
       - run:
           name: checkout fb-user-datastore-deploy
-          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_0fdf749e82a9987d0efabe1a40db7783 -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-user-datastore-deploy.git ~/circle/git/fb-user-datastore-deploy"
+          command: "GIT_SSH_COMMAND='ssh -v -i ~/.ssh/id_rsa_9f66018b193c0e406fb8e011a44309af -o \"IdentitiesOnly=yes\"' git clone git@github.com:ministryofjustice/fb-user-datastore-deploy.git ~/circle/git/fb-user-datastore-deploy"
       - run:
           name: persist git crypt key to disk
           command: "echo $ENCODED_GIT_CRYPT_KEY | base64 -d > /root/circle/git_crypt.key"
