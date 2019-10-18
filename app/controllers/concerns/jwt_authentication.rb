@@ -52,11 +52,7 @@ module Concerns
     end
 
     def disable_jwt?
-      swagger || false
-    end
-
-    def swagger
-      Rails.env.development? && request.referrer.include?('api-docs')
+      Rails.env.development?
     end
 
     def get_service_token(service_slug)
