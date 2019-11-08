@@ -15,7 +15,10 @@ RUN bundle install --jobs 2 --retry 3 --no-cache ${BUNDLE_FLAGS}
 
 COPY . .
 
-ADD https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem ./rds-combined-ca-bundle.pem
+ADD https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem ./rds-ca-2019-root.pem
+ADD https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem ./rds-ca-2015-root.pem
+RUN cat ./rds-ca-2019-root.pem > ./rds-ca-bundle-root.crt
+RUN cat ./rds-ca-2015-root.pem >> ./rds-ca-bundle-root.crt
 
 RUN chown -R 1001:appgroup /app
 USER 1001
