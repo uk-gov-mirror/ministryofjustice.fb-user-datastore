@@ -79,10 +79,22 @@ jobs:
           name: deploy to live production
           command: './scripts/circleci_deploy.sh live production $KUBE_TOKEN_LIVE_PRODUCTION'
 
+  trigger_acceptance_tests:
+    docker:
+      - image: asmega/fb-builder:latest
+    steps:
+      - run:
+          name: "Trigger Acceptance Tests"
+          command: "curl -u ${CIRCLE_API_KEY}: -d build_parameters[CIRCLE_JOB]=start_workflows https://circleci.com/api/v1.1/project/github/ministryofjustice/fb-acceptance-tests/tree/master"
+
 workflows:
   version: 2
   test_and_build:
     jobs:
+      - trigger_acceptance_tests:
+          filters:
+            branches:
+              only: master
       - test
       - build_and_deploy_to_test:
           requires:
