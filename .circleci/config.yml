@@ -81,11 +81,11 @@ jobs:
 
   trigger_acceptance_tests:
     docker:
-      - image: asmega/fb-builder:latest
+      - image: circleci/ruby:latest
     steps:
       - run:
           name: "Trigger Acceptance Tests"
-          command: "curl -u ${CIRCLE_API_KEY}: -d build_parameters[CIRCLE_JOB]=start_workflows https://circleci.com/api/v1.1/project/github/ministryofjustice/fb-acceptance-tests/tree/master"
+          command: "curl -u ${CIRCLE_TOKEN}: -X POST https://circleci.com/api/v2/project/github/ministryofjustice/fb-acceptance-tests/pipeline -H 'Content-Type: application/json' -H 'Accept: application/json'"
 
 workflows:
   version: 2
