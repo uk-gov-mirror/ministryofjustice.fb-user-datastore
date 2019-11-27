@@ -10,7 +10,9 @@ RSpec.shared_context 'a JSON-only API' do |method_name, url|
     end
 
     it 'responds with the json content type' do
-      expect(response.content_type).to eq('application/json')
+      if response.code == 200
+        expect(response.content_type).to eq('application/json')
+      end
     end
 
     it 'does not respond_with :unacceptable' do

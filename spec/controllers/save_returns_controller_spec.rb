@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe SaveReturnsController, type: :controller do
   before :each do
-    allow_any_instance_of(ApplicationController).to receive(:verify_token!)
+    allow_any_instance_of(ApplicationController).to receive(:authenticate)
     request.env['CONTENT_TYPE'] = 'application/json'
   end
 

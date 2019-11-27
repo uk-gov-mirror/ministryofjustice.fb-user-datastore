@@ -17,11 +17,11 @@ RSpec.describe 'UserData API', type: :request do
       let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
 
       it_behaves_like 'a JSON-only API', :get, '/service/:service_slug/user/:user_identifier'
-      it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
+      it_behaves_like 'an authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
 
       context 'with a valid token' do
         before do
-          allow_any_instance_of(ApplicationController).to receive(:verify_token!)
+          allow_any_instance_of(ApplicationController).to receive(:authenticate)
           get url, headers: headers
         end
 
@@ -88,11 +88,11 @@ RSpec.describe 'UserData API', type: :request do
       let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
 
       it_behaves_like 'a JSON-only API', :get, '/service/:service_slug/user/:user_identifier'
-      it_behaves_like 'a JWT-authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
+      it_behaves_like 'an authenticated method', :get, '/service/:service_slug/user/:user_identifier', {}
 
       context 'with a valid token' do
         before do
-          allow_any_instance_of(ApplicationController).to receive(:verify_token!)
+          allow_any_instance_of(ApplicationController).to receive(:authenticate)
         end
 
         context 'and a valid JSON body' do
@@ -159,21 +159,19 @@ RSpec.describe 'UserData API', type: :request do
   describe 'request error messages' do
     context 'exception TokenNotValidError raised' do
       before do
-        allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(Exceptions::TokenNotValidError)
         post "/service/#{service_slug}/user/#{user_identifier}"
       end
-      it 'returns a 403 status' do
-        expect(response).to have_http_status(403)
+      it 'returns a 401 status' do
+        expect(response).to have_http_status(401)
       end
 
       it 'returns json error message' do
-        expect(json['errors'].first['title']).to eq(I18n.t('error_messages.token_not_valid.title'))
+        expect(response.body).to eq("HTTP Basic: Access denied.\n")
       end
     end
 
     context 'exception TokenNotPresentError raised' do
       before do
-        allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(Exceptions::TokenNotPresentError)
         post "/service/#{service_slug}/user/#{user_identifier}"
       end
 
@@ -182,13 +180,13 @@ RSpec.describe 'UserData API', type: :request do
       end
 
       it 'returns json error message' do
-        expect(json['errors'].first['title']).to eq(I18n.t('error_messages.token_not_present.title'))
+        expect(response.body).to eq("HTTP Basic: Access denied.\n")
       end
     end
 
     context 'exception InternalServerError raised' do
       before do
-        allow_any_instance_of(ApplicationController).to receive(:verify_token!).and_raise(StandardError)
+        allow_any_instance_of(ApplicationController).to receive(:authenticate).and_raise(StandardError)
         post "/service/#{service_slug}/user/#{user_identifier}"
       end
       it 'returns a 500 status' do
