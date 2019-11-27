@@ -37,7 +37,7 @@ stop:
 spec: build
 	$(DOCKER_COMPOSE) up -d db
 	./scripts/wait_for_db.sh db postgres
-	$(DOCKER_COMPOSE) run -e RAILS_ENV=test --rm app bundle exec rspec
+	$(DOCKER_COMPOSE) run -e RAILS_ENV=test --rm app bundle exec rspec ${ARGS}
 
 build_and_push: install_build_dependencies login
 	docker build -t ${ECR_REPO_URL}:latest --build-arg BUNDLE_FLAGS="--without test development" -t ${ECR_REPO_URL}:${CIRCLE_SHA1} -f ./Dockerfile .
