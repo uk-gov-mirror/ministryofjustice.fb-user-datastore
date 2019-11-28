@@ -3,7 +3,7 @@ module Concerns
     extend ActiveSupport::Concern
 
     included do
-      before_action :verify_token!, unless: :disable_jwt?
+      before_action :verify_token!
 
       if ancestors.include?(Concerns::ErrorHandling)
         rescue_from Exceptions::TokenNotPresentError do |e|
@@ -49,10 +49,6 @@ module Concerns
       rescue StandardError => e
         raise Exceptions::TokenNotValidError.new
       end
-    end
-
-    def disable_jwt?
-      Rails.env.development?
     end
 
     def get_service_token(service_slug)
