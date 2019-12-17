@@ -9,12 +9,12 @@ class UserDataController < ApplicationController
   # handle create or update in one method, called via POST
   def create_or_update
     @user_data = find_or_build(record_retrieval_params)
-    success_status = @user_data.persisted? ? :no_content : :created
+    success_status = @user_data.persisted? ? :ok : :created
 
     @user_data.payload = user_data_params[:payload]
     @user_data.save!
 
-    render status: success_status, format: :json
+    render json: {}, status: success_status, format: :json
   end
 
   private

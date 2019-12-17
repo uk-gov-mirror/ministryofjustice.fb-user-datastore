@@ -11,7 +11,6 @@ RSpec.describe 'UserData API', type: :request do
   # ignores it in an initializer
   let(:user_identifier) { SecureRandom::uuid }
 
-
   describe 'a GET request' do
     context 'to /service/:service_slug/user/:user_identifier' do
       let(:url) { "/service/#{service_slug}/user/#{user_identifier}" }
@@ -118,6 +117,11 @@ RSpec.describe 'UserData API', type: :request do
               expect(response).to have_http_status(:created)
             end
 
+            it 'is valid JSON' do
+              post_request
+              expect { json }.to_not raise_error
+            end
+
             describe 'the created_user_data' do
               let(:created_user_data) { matching_user_data.last }
 
@@ -127,6 +131,7 @@ RSpec.describe 'UserData API', type: :request do
               end
             end
           end
+
           context 'when the user data exists' do
             let!(:existing_user_data) {
               UserData.create!(
@@ -146,9 +151,14 @@ RSpec.describe 'UserData API', type: :request do
               .to(encrypted_payload)
             end
 
-            it 'responds with :no_content status' do
+            it 'responds with :ok status' do
               post_request
-              expect(response).to have_http_status(:no_content)
+              expect(response).to have_http_status(:ok)
+            end
+
+            it 'is valid JSON' do
+              post_request
+              expect { json }.to_not raise_error
             end
           end
         end
