@@ -17,13 +17,9 @@ module Concerns
 
     private
 
-    # may raise any of:
-    #   TokenInvalidError
-    #   TokenNotPresentError
-    #
-    def verify_token!(token: request.headers['x-access-token'],
-                      args: params,
-                      leeway: ENV['MAX_IAT_SKEW_SECONDS'])
+    def verify_token!
+      token = request.headers['x-access-token']
+      leeway = ENV['MAX_IAT_SKEW_SECONDS']
 
       raise Exceptions::TokenNotPresentError.new unless token.present?
 
