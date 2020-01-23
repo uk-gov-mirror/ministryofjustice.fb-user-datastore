@@ -2,6 +2,8 @@ module Concerns
   module JWTAuthentication
     extend ActiveSupport::Concern
 
+    class SubjectMismatchError < StandardError; end
+
     included do
       before_action :verify_token!
 
@@ -33,7 +35,7 @@ module Concerns
 
       begin
         hmac_secret = service_token(params[:service_slug])
-        payload, header = JWT.decode(
+        @jwt_payload, _header = JWT.decode(
           token,
           hmac_secret,
           true,
@@ -45,7 +47,7 @@ module Concerns
 
         # NOTE: verify_iat used to be in the JWT gem, but was removed in v2.2
         # so we have to do it manually
-        iat_skew = payload['iat'].to_i - Time.current.to_i
+        iat_skew = @jwt_payload['iat'].to_i - Time.current.to_i
         if iat_skew.abs > leeway.to_i
           raise Exceptions::TokenNotValidError.new
         end
@@ -63,7 +65,7 @@ module Concerns
 
       begin
         hmac_secret = public_key(params[:service_slug])
-        payload, header = JWT.decode(
+        @jwt_payload, _header = JWT.decode(
           token,
           hmac_secret,
           true,
@@ -75,11 +77,11 @@ module Concerns
 
         # NOTE: verify_iat used to be in the JWT gem, but was removed in v2.2
         # so we have to do it manually
-        iat_skew = payload['iat'].to_i - Time.current.to_i
+
+        iat_skew = @jwt_payload['iat'].to_i - Time.current.to_i
         if iat_skew.abs > leeway.to_i
           raise Exceptions::TokenNotValidError.new
         end
-
       rescue StandardError => e
         raise Exceptions::TokenNotValidError.new
       end
