@@ -1,8 +1,16 @@
 class UserDataController < ApplicationController
+  before_action :verify_jwt_subject!
+
   def show
     @user_data = UserData.find_by!(record_retrieval_params)
 
     render json: ::UserDataPresenter.new(@user_data), status: :ok
+  end
+
+  def verify_jwt_subject!
+    unless @jwt_payload['sub'] == record_retrieval_params[:user_identifier]
+      raise Concerns::JWTAuthentication::SubjectMismatchError
+    end
   end
 
   # To keep things simple and fast on the client, we'll transparently
