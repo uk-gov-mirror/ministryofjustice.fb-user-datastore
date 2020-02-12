@@ -62,6 +62,8 @@ The following environment variables are either needed, or read if present:
 - `FORM_URL_SUFFIX`: URL suffix to the form. The prefix part if the form slug.
   This is what is sent to the user in emails.
 
-## To deploy and run on Cloud Platforms
+## Deployment
 
-See [deployment instructions](DEPLOY.md)
+Continuous Integration (CI) is enabled on this project via CircleCI.
+
+On merge to master tests are executed and if green deployed to the test environment. This build can then be promoted to production
