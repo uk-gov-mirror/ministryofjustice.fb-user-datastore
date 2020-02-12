@@ -4,14 +4,11 @@
 
 User Data store API for services built and deployed on Form Builder
 
-## Setting up development environment
+## Running tests
 
 Prerequisites:
 
-- Ruby and Bundler
-- Node.js and NPM
-- PostgreSQL
-- Docker - to build images to deploy
+- Docker
 
 Clone repository
 
@@ -19,28 +16,10 @@ Clone repository
 git clone git@github.com:ministryofjustice/fb-user-datastore.git && cd fb-user-datastore.git
 ```
 
-Intall gems
+Run the tests through docker and docker-compose
 
 ```sh
-bundle install
-```
-
-Setup database
-
-```sh
-bundle exec rake db:create db:migrate
-```
-
-### Running tests
-
-```sh
-bundle exec rspec
-```
-
-Or via Guard to run tests continuously
-
-```sh
-bundle exec guard
+make spec
 ```
 
 ## Deployment
