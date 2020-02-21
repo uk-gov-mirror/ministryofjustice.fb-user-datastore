@@ -2,11 +2,13 @@ class EmailsController < ApplicationController
   def add
     supersede_existing_records
 
-    email_data = Email.new(encrypted_email: params[:encrypted_email],
-                           service_slug: params[:service_slug],
-                           encrypted_payload: params[:encrypted_details],
-                           expires_at: expires_at,
-                           validity: 'valid')
+    email_data = Email.new(
+      encrypted_email: params[:encrypted_email],
+      service_slug: params[:service_slug],
+      encrypted_payload: params[:encrypted_details],
+      expires_at: expires_at,
+      validity: 'valid'
+    )
 
     if email_data.save
       return render json: { token: email_data.id }, status: :created
