@@ -23,7 +23,7 @@ RSpec.describe EmailsController, type: :controller do
     end
 
     context 'with a valid JSON body' do
-      context 'when the email records already exist' do
+      context 'when email records exist' do
         let(:existing_record1) do
           Email.create!(id: '5db4f4e3-71ef-4784-a03a-2f2a490174f2',
                         encrypted_email: 'encrypted:jane-doe@example.com',
@@ -48,7 +48,7 @@ RSpec.describe EmailsController, type: :controller do
           post_request
         end
 
-        it 'there are multiple records with the same email address' do
+        it 'has several records with the same email address' do
           expect(Email.where(encrypted_email: 'encrypted:jane-doe@example.com').count).to eq(3)
         end
 
@@ -71,6 +71,62 @@ RSpec.describe EmailsController, type: :controller do
         it 'returns token to client' do
           new_record = Email.order(created_at: :asc).last
           expect(JSON.parse(response.body)).to eql({"token" => new_record.id})
+        end
+      end
+
+      context 'when email records do not exist' do
+        before do
+          post_request
+        end
+
+        it 'creates a record with the email address' do
+          expect(Email.where(encrypted_email: 'encrypted:jane-doe@example.com').count).to eq(1)
+        end
+
+        it 'sets the created record validity to `valid`' do
+          new_record = Email.order(created_at: :asc).last
+          expect(new_record.validity).to eq('valid')
+        end
+
+        it 'returns a 201 status' do
+          expect(response).to have_http_status(201)
+        end
+
+        it 'returns token to client' do
+          new_record = Email.order(created_at: :asc).last
+          expect(JSON.parse(response.body)).to eql({"token" => new_record.id})
+        end
+      end
+
+      context 'with incorrect email data' do
+        context 'without an encrypted email' do
+          let(:json_hash) do
+            {
+              encrypted_email: nil,
+              encrypted_details: 'encryptedDetails'
+            }
+          end
+
+          it 'renders an email missing response' do
+            post_request
+            expect(response).to have_http_status(401)
+            expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'email.missing' })
+          end
+        end
+
+        context 'without encrypted details' do
+          let(:json_hash) do
+            {
+              encrypted_email: 'encryptedEmail',
+              encrypted_details: nil
+            }
+          end
+
+          it 'renders details missing response' do
+            post_request
+            expect(response).to have_http_status(401)
+            expect(JSON.parse(response.body)).to eql({ 'code' => 401, 'name' => 'details.missing' })
+          end
         end
       end
 

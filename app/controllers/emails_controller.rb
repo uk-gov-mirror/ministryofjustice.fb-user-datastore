@@ -2,6 +2,9 @@ class EmailsController < ApplicationController
   def add
     supersede_existing_records
 
+    return render_email_missing unless params[:encrypted_email]
+    return render_details_missing unless params[:encrypted_details]
+
     email_data = Email.new(
       encrypted_email: params[:encrypted_email],
       service_slug: params[:service_slug],
@@ -31,6 +34,16 @@ class EmailsController < ApplicationController
   end
 
   private
+
+  def render_email_missing
+    render json: { code: 401,
+                   name: 'email.missing' }, status: 401
+  end
+
+  def render_details_missing
+    render json: { code: 401,
+                   name: 'details.missing' }, status: 401
+  end
 
   def render_link_invalid
     render json: { code: 401,
