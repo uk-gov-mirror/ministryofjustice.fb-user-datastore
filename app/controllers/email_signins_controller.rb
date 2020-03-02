@@ -2,23 +2,31 @@ class EmailSigninsController < ApplicationController
   def add
     supersede_existing_records
 
-    save_return = SaveReturn.find_by(service_slug: params[:service_slug],
-                                     encrypted_email: params[:encrypted_email])
+    save_return = SaveReturn.find_by(
+      service_slug: params[:service_slug],
+      encrypted_email: params[:encrypted_email]
+    )
 
     return render_email_missing_error unless save_return
 
-    magic_link = MagicLink.new(service_slug: params[:service_slug],
-                               encrypted_email: params[:encrypted_email],
-                               expires_at: expires_at)
+    magic_link = MagicLink.new(
+      service_slug: params[:service_slug],
+      encrypted_email: params[:encrypted_email],
+      expires_at: expires_at
+    )
 
     if magic_link.save
-      render json: { token: magic_link.id }, status: :created
+      return render json: { token: magic_link.id }, status: :created
+    else
+      return render_email_missing_error
     end
   end
 
   def validate
-    magic_link = MagicLink.find_by(service_slug: params[:service_slug],
-                                   id: params[:magiclink])
+    magic_link = MagicLink.find_by(
+      service_slug: params[:service_slug],
+      id: params[:magiclink]
+    )
 
     return render_magic_link_missing_error unless magic_link
     return render_magic_link_used_error if magic_link.used?
@@ -28,8 +36,10 @@ class EmailSigninsController < ApplicationController
 
     magic_link.mark_as_used
 
-    save_return = SaveReturn.find_by(service_slug: magic_link.service_slug,
-                                     encrypted_email: magic_link.encrypted_email)
+    save_return = SaveReturn.find_by(
+      service_slug: magic_link.service_slug,
+      encrypted_email: magic_link.encrypted_email
+    )
 
     return render_save_and_return_missing_error unless save_return
 
@@ -43,8 +53,10 @@ class EmailSigninsController < ApplicationController
   end
 
   def supersede_existing_records
-    magic_links = MagicLink.where(service_slug: params[:service_slug],
-                                  encrypted_email: params[:encrypted_email])
+    magic_links = MagicLink.where(
+      service_slug: params[:service_slug],
+      encrypted_email: params[:encrypted_email]
+    )
 
     magic_links.update_all(validity: 'superseded')
   end
