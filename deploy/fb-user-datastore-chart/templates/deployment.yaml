@@ -56,3 +56,8 @@ spec:
               secretKeyRef:
                 name: fb-user-datastore-api-secrets-{{ .Values.environmentName }}
                 key: sentry_dsn
+          - name: METRICS_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: fb-user-datastore-api-secrets-{{ .Values.environmentName }}
+                key: metrics_access_key
