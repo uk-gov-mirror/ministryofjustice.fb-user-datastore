@@ -4,7 +4,7 @@ ruby File.read(".ruby-version").strip
 
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rails', '~> 6.0.3'
-gem 'metrics_adapter'
+gem 'metrics_adapter', '0.2.0'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.3'
 gem 'jwt'
