@@ -102,7 +102,7 @@ jobs:
           command: './scripts/circleci_deploy.sh pentest dev $KUBE_TOKEN_PENTEST_DEV'
       - run:
           name: deploy to pentest production
-          command: './scripts/circleci_deploy.sh live production $KUBE_TOKEN_PENTEST_PRODUCTION'
+          command: './scripts/circleci_deploy.sh pentest production $KUBE_TOKEN_PENTEST_PRODUCTION'
 
   trigger_acceptance_tests:
     docker:
