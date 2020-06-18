@@ -12,6 +12,9 @@ integration:
 live:
 	echo "TODO: Remove live function call from deploy-utils"
 
+pentest:
+	echo "TODO: Remove live function call from deploy-utils"
+
 init:
 	$(eval export ECR_REPO_URL=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-user-datastore-api)
 
