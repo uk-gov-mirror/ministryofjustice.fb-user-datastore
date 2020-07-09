@@ -24,7 +24,7 @@ end
 
 group :test do
   gem 'database_cleaner'
-  gem 'factory_bot_rails', '~> 6.0'
+  gem 'factory_bot_rails', '~> 6.1'
   gem 'shoulda-matchers', '~> 4.3'
   gem 'simplecov'
   gem 'simplecov-console', require: false
