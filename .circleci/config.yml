@@ -105,6 +105,15 @@ jobs:
           name: Run acceptance tests
           command: './deploy-scripts/bin/acceptance_tests'
       - slack/status: *slack_status
+  smoke_tests:
+    docker: *ecr_base_image
+    steps:
+      - setup_remote_docker
+      - run: *deploy_scripts
+      - run:
+          name: Run smoke tests
+          command: './deploy-scripts/bin/smoke_tests'
+      - slack/status: *slack_status
 
 workflows:
   version: 2
@@ -136,3 +145,6 @@ workflows:
       - build_and_deploy_to_live:
           requires:
             - confirm_live_deploy
+      - smoke_tests:
+          requires:
+            - build_and_deploy_to_live
