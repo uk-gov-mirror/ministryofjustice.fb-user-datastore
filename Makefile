@@ -1,17 +1,5 @@
 DOCKER_COMPOSE = docker-compose -f docker-compose.yml
 
-dev:
-	echo "TODO: Remove dev function call from deploy-utils"
-
-test:
-	echo "TODO: Remove test function call from deploy-utils"
-
-integration:
-	echo "TODO: Remove integration function call from deploy-utils"
-
-live:
-	echo "TODO: Remove live function call from deploy-utils"
-
 init:
 	$(eval export ECR_REPO_URL=754256621582.dkr.ecr.eu-west-2.amazonaws.com/formbuilder/fb-user-datastore-api)
 
