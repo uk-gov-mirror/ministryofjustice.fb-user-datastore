@@ -29,7 +29,7 @@ module Concerns
 
     def verify
       token = request.headers['x-access-token-v2']
-      leeway = ENV['MAX_IAT_SKEW_SECONDS']
+      leeway = 600
 
       begin
         hmac_secret = public_key(params[:service_slug])
