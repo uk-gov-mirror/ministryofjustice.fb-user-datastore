@@ -1,7 +1,7 @@
 require 'mixpanel-ruby'
 
 class UserDataController < ApplicationController
-  before_action :verify_jwt_subject!
+  before_action :blah_blah_blah
 
   def show
     tracker = Mixpanel::Tracker.new('8b7f1520692b15f418aeb3b03dab1c20')
@@ -37,7 +37,6 @@ class UserDataController < ApplicationController
 
     @user_data.payload = user_data_params[:payload]
     @user_data.save!
-
     render json: {}, status: success_status, format: :json
   end
 
@@ -60,5 +59,16 @@ class UserDataController < ApplicationController
 
   def mix_panel_uuid
     @_mix_panel_uuid ||= (request.headers['mix-panel-uuid'] || 'no-id')
+  end
+
+  def blah_blah_blah
+    tracker = Mixpanel::Tracker.new('8b7f1520692b15f418aeb3b03dab1c20')
+    tracker.track(mix_panel_uuid,
+      'datastore verify jwt',
+      {
+        'request_url' => request.url,
+        'benchmark' =>  Benchmark.ms { verify_jwt_subject! }
+      }
+     )
   end
 end

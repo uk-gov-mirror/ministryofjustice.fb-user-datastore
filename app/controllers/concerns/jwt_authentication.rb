@@ -1,3 +1,5 @@
+require 'mixpanel-ruby'
+
 module Concerns
   module JWTAuthentication
     extend ActiveSupport::Concern
