@@ -9,6 +9,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.0'
 gem 'jwt'
 gem 'sentry-raven'
+gem 'mixpanel-ruby'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

@@ -1,9 +1,16 @@
+require 'mixpanel-ruby'
+
+tracker = Mixpanel::Tracker.new('8b7f1520692b15f418aeb3b03dab1c20')
+
 class UserDataController < ApplicationController
   before_action :verify_jwt_subject!
 
   def show
+    tracker.track(mix_panel_uuid, 'datastore', 'received')
+
     @user_data = UserData.find_by!(record_retrieval_params)
 
+    tracker.track(mix_panel_uuid, 'datastore', 'returned')
     render json: ::UserDataPresenter.new(@user_data), status: :ok
   end
 
@@ -40,5 +47,9 @@ class UserDataController < ApplicationController
 
   def user_data_params(opts = params)
     opts.permit(:payload)
+  end
+
+  def mix_panel_uuid
+    @_mix_panel_uuid ||= (request.headers['mix-panel-uuid'] || 'no-id')
   end
 end
