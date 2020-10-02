@@ -5,11 +5,21 @@ class UserDataController < ApplicationController
 
   def show
     tracker = Mixpanel::Tracker.new('8b7f1520692b15f418aeb3b03dab1c20')
-    tracker.track(mix_panel_uuid, 'datastore', 'received')
+    tracker.track(mix_panel_uuid,
+     'datastore received',
+     {
+       'request_url' => request.url
+     }
+    )
 
     @user_data = UserData.find_by!(record_retrieval_params)
 
-    tracker.track(mix_panel_uuid, 'datastore', 'returned')
+    tracker.track(mix_panel_uuid,
+      'datastore returned',
+     {
+       'request_url' => request.url
+     }
+    )
     render json: ::UserDataPresenter.new(@user_data), status: :ok
   end
 
