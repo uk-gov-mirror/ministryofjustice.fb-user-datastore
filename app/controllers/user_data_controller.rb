@@ -1,11 +1,10 @@
 require 'mixpanel-ruby'
 
-tracker = Mixpanel::Tracker.new('8b7f1520692b15f418aeb3b03dab1c20')
-
 class UserDataController < ApplicationController
   before_action :verify_jwt_subject!
 
   def show
+    tracker = Mixpanel::Tracker.new('8b7f1520692b15f418aeb3b03dab1c20')
     tracker.track(mix_panel_uuid, 'datastore', 'received')
 
     @user_data = UserData.find_by!(record_retrieval_params)
