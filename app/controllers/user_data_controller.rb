@@ -1,5 +1,13 @@
 class UserDataController < ApplicationController
+  before_action :count_requests
   before_action :verify_jwt_subject!
+
+  $datastore_requests_total = 0
+  def count_requests
+    $datastore_requests_total += 1
+    Rails.logger.info("Total requests: #{$datastore_requests_total}")
+    true
+  end
 
   def show
     @user_data = UserData.find_by!(record_retrieval_params)

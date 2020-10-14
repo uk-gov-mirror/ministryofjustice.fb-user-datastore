@@ -127,12 +127,15 @@ workflows:
             branches:
               only:
                 - master
+                - identify-acceptance-test-load
       - acceptance_tests:
           requires:
             - build_and_deploy_to_test
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - identify-acceptance-test-load
       - slack/approval-notification:
           message: ":portalorangeparrot:  Deployment to Live pending approval  :portalblueparrot:"
           include_job_number_field: false
