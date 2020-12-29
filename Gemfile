@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby File.read(".ruby-version").strip
 
 gem 'bootsnap', '>= 1.1.0', require: false
-gem 'rails', '~> 6.0.3'
+gem 'rails', '~> 6.1.0'
 gem 'metrics_adapter', '0.2.0'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.1'
