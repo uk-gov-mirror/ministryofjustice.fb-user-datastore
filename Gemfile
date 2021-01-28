@@ -6,7 +6,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rails', '~> 6.1.1'
 gem 'metrics_adapter', '0.2.0'
 gem 'pg', '>= 0.18', '< 2.0'
-gem 'puma', '~> 5.1'
+gem 'puma', '~> 5.2'
 gem 'jwt'
 gem 'sentry-raven'
 
