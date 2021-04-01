@@ -42,7 +42,7 @@ spec:
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
-                name: rds-instance-formbuilder-user-datastore-{{ .Values.environmentName }}
+                name: rds-aurora-formbuilder-user-datastore-{{ .Values.environmentName }}
                 key: url
           - name: SECRET_KEY_BASE
             valueFrom:
