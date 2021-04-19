@@ -116,7 +116,7 @@ GEM
       guard-compat (~> 1.0)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
-    jwt (2.2.2)
+    jwt (2.2.3)
     keen (1.1.1)
       addressable (~> 2.5)
       multi_json (~> 1.12)
