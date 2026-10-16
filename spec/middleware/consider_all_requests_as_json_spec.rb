@@ -8,8 +8,6 @@ RSpec.describe 'ConsiderAllRequestsJsonMiddleware' do
 
   context "when called with a POST request" do
     context "with form encoded header" do
-      let(:post_data) { "String or IO post data" }
-
       it "replaces the correct header" do
         expect(app).to receive(:call).with({"CONTENT_TYPE"=>"application/json"})
         subject.call(env)

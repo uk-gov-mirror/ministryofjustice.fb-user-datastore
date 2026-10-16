@@ -4,7 +4,6 @@ RSpec.describe 'Concerns::JWTAuthentication' do
   let(:service_token) { 'service-token' }
   let(:service_slug) { 'service-slug' }
   let(:request_id) { '12345' }
-  let(:body) { response.body }
   let(:parsed_body) { JSON.parse(response.body) }
   let(:payload) { {} }
   let(:headers) { { 'X-Request-Id' => request_id } }

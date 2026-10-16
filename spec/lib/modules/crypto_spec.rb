@@ -30,8 +30,6 @@ RSpec.describe Crypto::AES256 do
       described_class.decrypt(key: key, data: encrypted_string)
     }
     context 'given a previously encrypted string' do
-      let(:encrypted_data) { encrypted_string }
-
       it 'returns the original plain text' do
         expect(decrypted_string).to eq(plaintext_string)
       end
